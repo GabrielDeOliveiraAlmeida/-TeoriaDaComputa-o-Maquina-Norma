@@ -73,12 +73,14 @@ function multiplicacao(regA, regB){
 
 function divisao(regA, regB){
 	let regAux = new Registrador();
+	let regC = new Registrador();
+
 	regB.changeSignal();
 	if(!regA.isSignalZero()){
 		regA.sinal = 0;
 	}
 	if(regB.isSignalZero()){
-		regB.sinal=0;
+		regB.sinal=1;
 	}
 
 	while(true){
@@ -97,6 +99,55 @@ function divisao(regA, regB){
 	}
 }
 
+function restoDivisao(regA, regB){
+	let regAux = new Registrador();
+	let regC = new Registrador();
+
+	somar(regC, regB, true, regAux);
+
+	regC.print();
+
+
+	//Tratar A negativo
+	if(!regA.isSignalZero()){
+		if(!regB.isSignalZero()){
+			regB.changeSignal();
+		} 
+		while(true){
+			if(regA.isValueZero()) break;
+			if(regA.isSignalZero()) break;
+			somar(regA, regB, true, regAux);
+		}
+
+	//Tratar A positivo 
+	}else{
+		if(regB.isSignalZero()){
+			regB.changeSignal();
+		}
+		while(true){
+			if(regA.isValueZero()) break;
+			if(!regA.isSignalZero()) break;
+			somar(regA, regB, true, regAux);
+		}
+
+		//Se B positivo
+		if(!regC.isSignalZero()){
+			return;
+		}
+
+	}
+
+
+	//Verificar sinal
+	if(!regC.isSignalZero()){
+		regA.changeSignal();
+		somar(regA, regB, true, regAux);
+	}else{
+		regB.changeSignal();
+		somar(regA, regB, true, regAux);
+	}
+
+}
 
 function fatorial(regA){
 	if(regA.isValueZero()){
