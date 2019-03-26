@@ -1,13 +1,13 @@
 class Registrador{
-	constructor(sinal, valor){
-		this.sinal = sinal;
-		this.valor = valor;
+	constructor(){
+		this.sinal = 0;
+		this.valor = 0;
 	}
 
 
-	atribuicao(sinal, valor){
+	atribuicao(sinal, n){
 		this.sinal = sinal;
-		while(this.valor.valor < n)
+		while(this.valor < n)
 			this.valor++; 
 	}
 

@@ -45,9 +45,9 @@ function somar(regA, regB, manter, regAux){
 
 
 function multiplicacao(regA, regB){
-	let regC = new Registrador(0, 0);
-	let regD = new Registrador(0, 0);
-	let regAux = new Registrador(0,0);
+	let regC = new Registrador();
+	let regD = new Registrador();
+	let regAux = new Registrador();
 	if(regA.sinal == 1){
 		regAux.sinal++;
 	}
@@ -72,7 +72,7 @@ function multiplicacao(regA, regB){
 
 
 function divisao(regA, regB){
-	let regAux = new Registrador(0,0);
+	let regAux = new Registrador();
 	regB.changeSignal();
 	if(!regA.isSignalZero()){
 		regA.sinal = 0;
@@ -103,8 +103,8 @@ function fatorial(regA){
 		regA.addOne();
 		return;
 	}
-	let regB = new Registrador(0,0);
-	let regC = new Registrador(0,0);
+	let regB = new Registrador();
+	let regC = new Registrador();
 
 	if(!regA.isSignalZero()){
 		console.log("Sinal negativo!");
@@ -128,12 +128,12 @@ function potencia(regA, regB){
 	 * A*a*...
 	 * C e D são utilizados para realizar a multiplicação
 	 */
-	if(regB.isSignalZero()){
+	if(!regB.isSignalZero()){
 		regA.reset();
 		return;
 	}
-	let regC = new Registrador(0,0);
-	let regD = new Registrador(0,0);
+	let regC = new Registrador();
+	let regD = new Registrador();
 
 	somar(regD, regB, true, regC);
 	regD.subOne();
@@ -149,7 +149,7 @@ function potencia(regA, regB){
 
 
 function testes(regA, regB){
-	let regAux = new Registrador(0,0);
+	let regAux = new Registrador();
 	
 	regB.changeSignal();
 
@@ -164,10 +164,12 @@ function testes(regA, regB){
 
 
 function primo(regA){
-	regB = new Registrador(0,0);
-	regC = new Registrador(0,0);
-	regD = new Registrador(0,0);
-	regE = new Registrador(1,1);
+	regB = new Registrador();
+	regC = new Registrador();
+	regD = new Registrador();
+	regE = new Registrador();
+
+	regE.atribuicao(1,1);
 
 	somar(regB, regA, true, regC);
 	regB.subOne();

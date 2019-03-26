@@ -12,12 +12,15 @@
 
 
 function main(){
-	let regA = new Registrador(0, 5);
-	let regB = new Registrador(1, 4);
-	let regC = new Registrador(0,0);
+	let regA = new Registrador();
+	let regB = new Registrador();
+	let regC = new Registrador();
+
+	regA.atribuicao(0,67);
+	regB.atribuicao(1,2);
 	
-	//somar(regB, regA);
-	//somar(regA, regB, false, regC);
+	//somar(regA, regB);
+	//somar(regA, regB, true, regC);
 	//multiplicacao(regA, regB);
 	//divisao(regA, regB);
 	//testes(regA, regB);
@@ -25,9 +28,9 @@ function main(){
 	//potencia(regA, regB);
 	primo(regA);
 	console.log("resultado");
-	regA.print();
-	regB.print();
-	regC.print();
+	regA.print("A ");
+	regB.print("B ");
+	regC.print("C " );
 }
 
 
