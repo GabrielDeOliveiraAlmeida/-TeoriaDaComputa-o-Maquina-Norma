@@ -66,7 +66,6 @@ function multiplicacao(regA, regB){
 	}else if(!regAux.isSignalZero()){
 		regA.sinal++;
 	}
-	console.log("sinal de A" + regA.sinal);
 
 }
 
@@ -159,7 +158,7 @@ function fatorial(regA){
 
 	if(!regA.isSignalZero()){
 		console.log("Sinal negativo!");
-		return;
+		return "SINAL NEGATIVO";
 	}
 	somar(regB, regA, true, regC);
 	regB.print();
@@ -181,6 +180,11 @@ function potencia(regA, regB){
 	 */
 	if(!regB.isSignalZero()){
 		regA.reset();
+		return;
+	}
+	if(regB.isValueZero()){
+		regA.valor =0;
+		regA.valor++;
 		return;
 	}
 	let regC = new Registrador();
@@ -206,11 +210,16 @@ function testes(regA, regB){
 
 	somar(regA, regB, true, regAux);
 	
-	if(regA.isValueZero())
+	if(regA.isValueZero()){
 		console.log("A<=B");
-	else if(!regA.isSignalZero())
+		return "A <= B";
+	}else if(!regA.isSignalZero()){
 		console.log("A<B");
-	else console.log("A > B");
+		return "A < B";
+	}else{
+		console.log("A > B");
+		return "A > B";	
+	} 
 }
 
 
@@ -236,10 +245,11 @@ function primo(regA){
 		divisao(regC, regB);
 		if(regC.isValueZero()){
 			console.log("Não Primo");
-			return;	
+			return "NÃO PRIMO";	
 		}
 		regB.subOne(); 
 		regC.reset();
 	}
 	console.log("Primo");
+	return "PRIMO";
 }

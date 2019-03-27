@@ -2,8 +2,46 @@
 <html>
 <head>
 	<title>Teste</title>
+	<meta charset="UTF-8">
 </head>
 <body>
+<label for="sinal_reg_a">Registrador A</label>
+<input type="text" id="sinal_reg_a" placeholder="Sinal">
+<input type="text" id="valor_reg_a" placeholder="Valor">
+
+<label for="sinal_reg_b">Registrador B</label>
+<input type="text" id="sinal_reg_b" placeholder="Sinal">
+<input type="text" id="valor_reg_b" placeholder="Valor"><br><br>
+
+
+  <label for="soma">Soma A+B</label>
+  <input type="radio" name="gender" id="soma"><br>
+   <label for="soma">Soma A+B E manter valor de B</label>
+  <input type="radio" name="gender" id="soma_mantem"><br>
+  <label for="mult">Multiplicação AxB</label>
+  <input type="radio" name="gender" id="mult"><br>
+  <label for="resto">Resto Divisao A%B</label>
+  <input type="radio" name="gender" id="resto"><br>
+  <label for="teste">Teste A>B ou A<=B</label>
+  <input type="radio" name="gender" id="teste"><br>
+  <label for="fatorial">Fatorial A!</label>
+  <input type="radio" name="gender" id="fatorial"><br>
+  <label for="potencia">Potencia A^B</label>
+  <input type="radio" name="gender" id="potencia"><br>
+  <label for="primo">Verificar se A é Primos</label>
+  <input type="radio" name="gender" id="primo"><br><br>
+  <input type="submit" value="Calcular" onclick="resultado()">
+
+  <br><br>
+  <input type="text" id="result" placeholder="RESULTADOS">
+
+<br><br><br><br>
+<h3>TEORIA DA COMPUTACAO</h3>
+Gabriel de Oliveira Almeida<br>
+Gustavo Lopes Santana<br>
+João Victor Silva Menezes<br>
+Celso Olivete Junior
+<h4>FCT-UNESP</h4>
 
 </body>
 <script type="text/javascript" src="registrador.js"></script>
@@ -11,6 +49,42 @@
 <script type="text/javascript">
 
 
+
+function resultado(){
+	var regA = new Registrador();
+	var regB = new Registrador();
+	var regC = new Registrador();
+	var teste;
+
+	regA.atribuicao(document.getElementById("sinal_reg_a").value, document.getElementById("valor_reg_a").value);
+	regB.atribuicao(document.getElementById("sinal_reg_b").value, document.getElementById("valor_reg_b").value);
+
+	 if(document.getElementById("soma").checked){
+		somar(regA, regB);
+	}else if(document.getElementById("soma_mantem").checked){
+		somar(regA, regB, true, regC);
+	}else if(document.getElementById("mult").checked){
+		multiplicacao(regA, regB);
+	}else if(document.getElementById("resto").checked){
+		restoDivisao(regA, regB);
+	}else if(document.getElementById("teste").checked){
+		teste = testes(regA, regB);
+	}else if(document.getElementById("fatorial").checked){
+		teste = fatorial(regA);
+	}else if(document.getElementById("potencia").checked){
+		potencia(regA, regB);
+	}else if(document.getElementById("primo").checked){
+		teste = primo(regA);
+	}
+
+	if(teste == undefined) teste = "REGISTRADORES ALTERADOS";
+	document.getElementById('sinal_reg_a').value = regA.sinal;
+	document.getElementById('valor_reg_a').value = regA.valor;
+	document.getElementById('sinal_reg_b').value = regB.sinal;
+	document.getElementById('valor_reg_b').value = regB.valor;
+	document.getElementById('result').value = teste;
+
+}
 function main(){
 	let regA = new Registrador();
 	let regB = new Registrador();
