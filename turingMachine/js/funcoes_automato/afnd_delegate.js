@@ -44,11 +44,12 @@ var afnd_delegate = (function() {
       alert(dialogActiveConnection.sourceId + " já existe transição para " + dialogActiveConnection.targetId + " em " + (inputRead || emptyLabel));
       return;
     }
-    inputRead={read:inputRead, write: inputWrite, direction: inputRLS || emptyLabel}
-    dialogActiveConnection.setLabel(JSON.stringify(inputRead) || emptyLabel);
+    dialog={read:inputRead, write: inputWrite, direction: inputRLS || emptyLabel}
+    dialogActiveConnection.setLabel(JSON.stringify(dialog) || emptyLabel);
     // dialogActiveConnection.setLabel2(inputWrite || emptyLabel);
     // dialogActiveConnection.setLabel3(inputRLS || emptyLabel);
     //dialogActiveConnection.setLabel(inputRead+"|"+inputWrite+"|"+inputRLS || emptyLabel);
+    console.log(inputRead);
     afnd.addTransition(dialogActiveConnection.sourceId, inputRead, inputWrite, inputRLS, dialogActiveConnection.targetId);
     dialogDiv.dialog("close");
   };
