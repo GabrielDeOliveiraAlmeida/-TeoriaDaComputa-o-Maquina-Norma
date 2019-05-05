@@ -44,8 +44,8 @@ var afnd_delegate = (function() {
       alert(dialogActiveConnection.sourceId + " já existe transição para " + dialogActiveConnection.targetId + " em " + (inputRead || emptyLabel));
       return;
     }
-    
-    dialogActiveConnection.setLabel(inputRead || emptyLabel);
+    inputRead={read:inputRead, write: inputWrite, direction: inputRLS || emptyLabel}
+    dialogActiveConnection.setLabel(JSON.stringify(inputRead) || emptyLabel);
     // dialogActiveConnection.setLabel2(inputWrite || emptyLabel);
     // dialogActiveConnection.setLabel3(inputRLS || emptyLabel);
     //dialogActiveConnection.setLabel(inputRead+"|"+inputWrite+"|"+inputRLS || emptyLabel);
@@ -134,9 +134,10 @@ var afnd_delegate = (function() {
     
     connectionClicked: function(connection) {
       dialogActiveConnection = connection;
-      $('#afnd_dialog_readCharTxt').val(dialogActiveConnection.getLabel());
-      // $('#afnd2_dialog_readCharTxt').val(dialogActiveConnection.getLabel2());
-      // $('#afndRL_dialog_readCharTxt').val(dialogActiveConnection.getLabel3());
+      text = JSON.parse(dialogActiveConnection.getLabel());
+      $('#afnd_dialog_readCharTxt').val(text.read);
+      $('#afnd2_dialog_readCharTxt').val(text.write);
+      $('#afndRL_dialog_readCharTxt').val(text.direction);
       dialogDiv.dialog('option', 'buttons', {
         Cancel: function(){dialogCancel(true);},
         Delete: dialogDelete,

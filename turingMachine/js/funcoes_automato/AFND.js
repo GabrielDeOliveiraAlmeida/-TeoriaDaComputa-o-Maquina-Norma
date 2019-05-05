@@ -77,8 +77,8 @@ AFND.prototype.removeTransitions = function(state) {
   return this;
 };
 
-AFND.prototype.removeTransition = function(stateA, inputRead, stateB) {
-  if (this.hasTransition(stateA, inputRead, stateB)) {
+AFND.prototype.removeTransition = function(stateA, input, stateB) {
+  if (this.hasTransition(stateA, input.inputRead, input.inputWrite, inputRLS, stateB)) {
     this.transitions[stateA][inputRead].splice(this.transitions[stateA][inputRead].indexOf(stateB), 1);
   }
   return this;

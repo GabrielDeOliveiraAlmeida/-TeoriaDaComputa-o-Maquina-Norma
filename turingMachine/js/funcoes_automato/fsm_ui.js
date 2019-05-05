@@ -217,7 +217,7 @@ var fsm = (function() {
 	return {
 		init: function() {
 			self = this;
-			$(domReadyInit);
+			$(domReadyInit);mo
 			return self;
 		},
 
