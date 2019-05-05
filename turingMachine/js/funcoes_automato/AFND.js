@@ -78,8 +78,9 @@ AFND.prototype.removeTransitions = function(state) {
 };
 
 AFND.prototype.removeTransition = function(stateA, input, stateB) {
-  if (this.hasTransition(stateA, input.inputRead, input.inputWrite, inputRLS, stateB)) {
-    this.transitions[stateA][inputRead].splice(this.transitions[stateA][inputRead].indexOf(stateB), 1);
+  text = input.split(' ');
+  if (this.hasTransition(stateA, text[0], text[1], text[2], stateB)) {
+    this.transitions[stateA][text[0]].splice(this.transitions[stateA][text[0]].indexOf(stateB), 1);
   }
   return this;
 };
