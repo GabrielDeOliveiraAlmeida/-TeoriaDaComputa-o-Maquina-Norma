@@ -40,16 +40,13 @@ var afnd_delegate = (function() {
 
     if (update) {
       afnd.removeTransition(dialogActiveConnection.sourceId, dialogActiveConnection.getLabel(), dialogActiveConnection.targetId);
-    } if (afnd.hasTransition(dialogActiveConnection.sourceId, inputRead,inputWrite, inputRLS, dialogActiveConnection.targetId)) {
+    } if (afnd.hasTransition(dialogActiveConnection.sourceId, inputRead, inputWrite, inputRLS, dialogActiveConnection.targetId)) {
       alert(dialogActiveConnection.sourceId + " já existe transição para " + dialogActiveConnection.targetId + " em " + (inputRead || emptyLabel));
       return;
     }
-    dialog={read:inputRead, write: inputWrite, direction: inputRLS || emptyLabel}
-    dialogActiveConnection.setLabel(JSON.stringify(dialog) || emptyLabel);
-    // dialogActiveConnection.setLabel2(inputWrite || emptyLabel);
-    // dialogActiveConnection.setLabel3(inputRLS || emptyLabel);
-    //dialogActiveConnection.setLabel(inputRead+"|"+inputWrite+"|"+inputRLS || emptyLabel);
-    console.log(inputRead);
+    //dialog={inputRead, write: inputWrite, direction: inputRLS || emptyLabel}
+    dialog=inputRead+" "+inputWrite+" "+inputRLS;
+    dialogActiveConnection.setLabel(dialog || emptyLabel);
     afnd.addTransition(dialogActiveConnection.sourceId, inputRead, inputWrite, inputRLS, dialogActiveConnection.targetId);
     dialogDiv.dialog("close");
   };
@@ -135,10 +132,12 @@ var afnd_delegate = (function() {
     
     connectionClicked: function(connection) {
       dialogActiveConnection = connection;
-      text = JSON.parse(dialogActiveConnection.getLabel());
-      $('#afnd_dialog_readCharTxt').val(text.read);
-      $('#afnd2_dialog_readCharTxt').val(text.write);
-      $('#afndRL_dialog_readCharTxt').val(text.direction);
+      text = dialogActiveConnection.getLabel();
+      regExp = new RegExp("^(.\|.\|.)$");
+      text = text.split(' ');
+      $('#afnd_dialog_readCharTxt').val(text[0]);
+      $('#afnd2_dialog_readCharTxt').val(text[1]);
+      $('#afndRL_dialog_readCharTxt').val(text[2]);
       dialogDiv.dialog('option', 'buttons', {
         Cancel: function(){dialogCancel(true);},
         Delete: dialogDelete,
