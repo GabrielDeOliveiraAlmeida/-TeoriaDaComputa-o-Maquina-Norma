@@ -10,7 +10,8 @@ function AFND(useDefaults) {
     inputLength: 0,
     states: [],
     status: null,
-    nextStep: null
+    nextStep: null,
+    tape: []
   };
 }
 
@@ -62,7 +63,16 @@ AFND.prototype.hasTransition = function(stateA, inputRead,inputWrite, inputRLS, 
     return false;
 };
 
-
+AFND.prototype.getTransition = function(stateA, inputRead,inputWrite, inputRLS, stateB) {
+  if (this.transitions[stateA] && this.transitions[stateA][inputRead]) {
+    for(var i=0; i<this.transitions[stateA][inputRead].length; i++){
+      if(this.transitions[stateA][inputRead][i].direction == inputRLS && 
+       this.transitions[stateA][inputRead][i].write == inputWrite &&
+       this.transitions[stateA][inputRead][i].final == stateB) return i;
+    }
+  }
+    return -1;
+};
 
 AFND.prototype.removeTransitions = function(state) {
   delete this.transitions[state];
@@ -80,7 +90,8 @@ AFND.prototype.removeTransitions = function(state) {
 AFND.prototype.removeTransition = function(stateA, input, stateB) {
   text = input.split(' ');
   if (this.hasTransition(stateA, text[0], text[1], text[2], stateB)) {
-    this.transitions[stateA][text[0]].splice(this.transitions[stateA][text[0]].indexOf(stateB), 1);
+    var pos = this.getTransition(stateA, text[0], text[1], text[2], stateB);
+    this.transitions[stateA][text[0]].splice(this.transitions[stateA][text[0]][pos],1);
   }
   return this;
 };
@@ -196,5 +207,100 @@ AFND.prototype.updateStatus = function() {
   }
   return self.processor.status;
 };
+
+// AFND.prototype.accepts = function(input) {
+//   var _status = this.stepInit(input);
+//   while (_status === 'Active') {_status = this.step();}
+//   return _status === 'Accept';
+// };
+
+// AFND.prototype.status = function() {
+//   var nextChar = null;
+//   if (this.processor.status === 'Active') {
+//     if (this.processor.nextStep === 'input' && this.processor.input.length > this.processor.inputIndex) {
+//       nextChar = this.processor.input.substr(this.processor.inputIndex, 1);
+//     } else if (this.processor.nextStep === 'epsilons') {
+//       nextChar = '';
+//     }
+//   }
+//   return {
+//     states: this.processor.states,
+//     input: this.processor.input,
+//     inputIndex: this.processor.inputIndex,
+//     nextChar: nextChar,
+//     status: this.processor.status
+//   };
+// };
+
+// AFND.prototype.stepInit = function(input) {
+//   this.processor.input = input;
+//   this.processor.inputLength = this.processor.input.length;
+//   this.processor.inputIndex = 0;
+//   this.processor.states = [this.startState];
+//   this.processor.status = 'Active';
+//   this.processor.nextStep = 'epsilons';
+//   return this.updateStatus();
+// };
+// AFND.prototype.step = function() {
+//   switch (this.processor.nextStep) {
+//     case 'epsilons':
+//       this.followEpsilonTransitions();
+//       this.processor.nextStep = 'input';
+//       break;
+//     case 'input':
+//       var newStates = [];
+//       var char = this.processor.input.substr(this.processor.inputIndex, 1);
+//       var state = null;
+//       while (state = this.processor.states.shift()) {
+//         var tranStates = this.transition(state, char);
+//         if (tranStates) {$.each(tranStates, function(index, tranState) {
+//             if (newStates.indexOf(tranState) === -1) {newStates.push(tranState);}
+//         });}
+//       };
+//       ++this.processor.inputIndex;
+//       this.processor.states = newStates;
+//       this.processor.nextStep = 'epsilons';
+//       break;
+//   }
+//   return this.updateStatus();
+// };
+// AFND.prototype.followEpsilonTransitions = function() {
+//   var self = this;
+//   var changed = true;
+//   while (changed) {
+//     changed = false;
+//     $.each(self.processor.states, function(index, state) {
+//       var newStates = self.transition(state, '');
+//       if (newStates) {$.each(newStates, function(sIndex, newState) {
+//           var match = false;
+//           $.each(self.processor.states, function(oIndex, checkState) {
+//             if (checkState === newState) {
+//               match = true;
+//               return false; 
+//             }
+//           });
+//           if (!match) {
+//             changed = true;
+//             self.processor.states.push(newState);
+//           }
+//       });}
+//     });
+//   }
+// };
+// AFND.prototype.updateStatus = function() {
+//   var self = this;
+//   if (self.processor.states.length === 0) {
+//     self.processor.status = 'Reject';
+//   }
+//   if (self.processor.inputIndex === self.processor.inputLength) {
+//    $.each(self.processor.states, function(index, state) {
+//       if (self.acceptStates.indexOf(state) >= 0) {
+//         self.processor.status = 'Accept';
+//         return false; 
+//       }
+//     });
+//   }
+//   return self.processor.status;
+// };
 
 });
