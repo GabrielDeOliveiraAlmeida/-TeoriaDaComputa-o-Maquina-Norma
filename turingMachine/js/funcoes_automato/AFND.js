@@ -5,13 +5,13 @@ function AFND(useDefaults) {
   this.acceptStates = useDefaults ? ['accept'] : [];
   
   this.processor = {
-    input: null,
+    input: [],
     inputIndex: 0,
+    index: 0,
     inputLength: 0,
     states: [],
     status: null,
     nextStep: null,
-    tape: []
   };
 }
 
@@ -119,6 +119,16 @@ AFND.prototype.accepts = function(input) {
   return _status === 'Accept';
 };
 
+AFND.prototype.stepInit = function(input) {
+  this.processor.input = input.split("");
+  this.processor.inputLength = this.processor.input.length;
+  this.processor.inputIndex = 0;
+  this.processor.states = [this.startState];
+  this.processor.status = 'Active';
+  this.processor.nextStep = 'epsilons';
+  return this.updateStatus();
+};
+
 AFND.prototype.status = function() {
   var nextChar = null;
   if (this.processor.status === 'Active') {
@@ -138,9 +148,10 @@ AFND.prototype.status = function() {
 };
 
 AFND.prototype.stepInit = function(input) {
-  this.processor.input = input;
+  this.processor.input = input.slice("");
   this.processor.inputLength = this.processor.input.length;
   this.processor.inputIndex = 0;
+  this.processor.index = 0;
   this.processor.states = [this.startState];
   this.processor.status = 'Active';
   this.processor.nextStep = 'epsilons';
@@ -154,13 +165,29 @@ AFND.prototype.step = function() {
       break;
     case 'input':
       var newStates = [];
-      var char = this.processor.input.substr(this.processor.inputIndex, 1);
+      //var char = this.processor.input.substr(this.processor.inputIndex, 1);
+      var char = this.processor.input[this.processor.inputIndex];
       var state = null;
       while (state = this.processor.states.shift()) {
         var tranStates = this.transition(state, char);
-        if (tranStates) {$.each(tranStates, function(index, tranState) {
-            if (newStates.indexOf(tranState) === -1) {newStates.push(tranState);}
-        });}
+        
+        if (tranStates) {
+          $.each(tranStates, function(index, tranState) {
+            // var teste = true;
+            // $.each(newStates, function(i, state){
+            //   if(state.final == tranState && state.write == tranState.write && state.direction == tranState.direction){
+            //     teste = false;
+            //   }
+            // });
+            // console.log(tranState);
+            // if(teste == true) {
+            //   newStates.push(tranState);
+            // }
+            if (newStates.indexOf(tranState['final']) === -1) {
+              newStates.push(tranState);
+            }
+          });
+        }
       };
       ++this.processor.inputIndex;
       this.processor.states = newStates;
@@ -192,6 +219,8 @@ AFND.prototype.followEpsilonTransitions = function() {
     });
   }
 };
+
+
 AFND.prototype.updateStatus = function() {
   var self = this;
   if (self.processor.states.length === 0) {
