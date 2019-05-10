@@ -128,7 +128,7 @@ var fsm = (function() {
 		// Criar transições
 		jsPlumb.unbind("jsPlumbConnection"); 
 		$.each(model.transitions, function(index, transition) {
-			jsPlumb.connect({source:transition.stateA, target:transition.stateB}).setLabel(transition.label);
+			jsPlumb.connect({source:transition.stateA, target:transition.stateB}).setLabel(transition.read+ " " +transition.write + " "+ transition.direction);
 		});
 		jsPlumb.bind("jsPlumbConnection", delegate.connectionAdded);
 		
