@@ -3,17 +3,10 @@ function AFND(useDefaults) {
   this.transitions = {};
   this.startState = useDefaults ? 'start' : null;
   this.acceptStates = useDefaults ? ['accept'] : [];
-  
-  this.processor = {
-    input: null,
-    inputIndex: 0,
-    inputLength: 0,
-    states: [],
-    status: null,
-    nextStep: null,
-    tape: []
-  };
+  this.history;
 }
+
+
 
 $(function() { 
   "use strict";
@@ -114,193 +107,58 @@ AFND.prototype.removeAcceptState = function(state) {
 };
 
 AFND.prototype.accepts = function(input) {
-  var _status = this.stepInit(input);
-  while (_status === 'Active') {_status = this.step();}
-  return _status === 'Accept';
+  if(this.stepInit(input)){
+    return 'Accept';
+  }
+  return 'Reject';
+};
+AFND.prototype.stepInit= function(input) {
+  console.log("Executando Turing Machine '"+ input+"'");
+  this.history = new HistoryLog(input.split(""));
+  var resultado = this.step(this.history, this.startState);
+  console.log("INPUT: " + resultado.found);
+  return resultado.found;
 };
 
-AFND.prototype.status = function() {
-  var nextChar = null;
-  if (this.processor.status === 'Active') {
-    if (this.processor.nextStep === 'input' && this.processor.input.length > this.processor.inputIndex) {
-      nextChar = this.processor.input.substr(this.processor.inputIndex, 1);
-    } else if (this.processor.nextStep === 'epsilons') {
-      nextChar = '';
+AFND.prototype.step = function(log, state ){
+  log.addTime();
+  var char = log.getRead();
+  console.log("Looking for: "+ char + "  de  "+log.expression);
+  var states;
+  try{
+    states = this.transitions[state][char];
+  }catch(e){
+    return log;
+  }
+  for(var currentState in states){
+    console.log("Transitions founded --> State:"+states[currentState].final+" Expression: " 
+        +log.expression + " Pointer: "+ log.pointer);
+    var newLog = log.clone(log.expression);
+    newLog.tapeFunction(states[currentState]);
+    var resultLog = this.step(newLog, states[currentState].final);
+    if(this.isFinal(resultLog.lista[log.lista.length-1].state.final)){
+      console.log("State final is here, must return now");
+      resultLog.found = true;
+      return resultLog;
     }
   }
-  return {
-    states: this.processor.states,
-    input: this.processor.input,
-    inputIndex: this.processor.inputIndex,
-    nextChar: nextChar,
-    status: this.processor.status
-  };
-};
-
-AFND.prototype.stepInit = function(input) {
-  this.processor.input = input;
-  this.processor.inputLength = this.processor.input.length;
-  this.processor.inputIndex = 0;
-  this.processor.states = [this.startState];
-  this.processor.status = 'Active';
-  this.processor.nextStep = 'epsilons';
-  return this.updateStatus();
-};
-AFND.prototype.step = function() {
-  switch (this.processor.nextStep) {
-    case 'epsilons':
-      this.followEpsilonTransitions();
-      this.processor.nextStep = 'input';
-      break;
-    case 'input':
-      var newStates = [];
-      var char = this.processor.input.substr(this.processor.inputIndex, 1);
-      var state = null;
-      while (state = this.processor.states.shift()) {
-        var tranStates = this.transition(state, char);
-        if (tranStates) {$.each(tranStates, function(index, tranState) {
-            if (newStates.indexOf(tranState) === -1) {newStates.push(tranState);}
-        });}
-      };
-      ++this.processor.inputIndex;
-      this.processor.states = newStates;
-      this.processor.nextStep = 'epsilons';
-      break;
+  try{
+    if(this.isFinal(states[currentState-1].final) ){
+      log.found = true;
+    }
+  }catch(e){
+    //Nada
   }
-  return this.updateStatus();
-};
-AFND.prototype.followEpsilonTransitions = function() {
-  var self = this;
-  var changed = true;
-  while (changed) {
-    changed = false;
-    $.each(self.processor.states, function(index, state) {
-      var newStates = self.transition(state, '');
-      if (newStates) {$.each(newStates, function(sIndex, newState) {
-          var match = false;
-          $.each(self.processor.states, function(oIndex, checkState) {
-            if (checkState === newState) {
-              match = true;
-              return false; 
-            }
-          });
-          if (!match) {
-            changed = true;
-            self.processor.states.push(newState);
-          }
-      });}
-    });
+  return log;
+}
+
+AFND.prototype.isFinal = function(wanted){
+  for(var i=0; i<this.acceptStates.length; i++){
+    if(this.acceptStates[i] == wanted){
+      return true;
+    }
   }
-};
-AFND.prototype.updateStatus = function() {
-  var self = this;
-  if (self.processor.states.length === 0) {
-    self.processor.status = 'Reject';
-  }
-  if (self.processor.inputIndex === self.processor.inputLength) {
-   $.each(self.processor.states, function(index, state) {
-      if (self.acceptStates.indexOf(state) >= 0) {
-        self.processor.status = 'Accept';
-        return false; 
-      }
-    });
-  }
-  return self.processor.status;
-};
-
-// AFND.prototype.accepts = function(input) {
-//   var _status = this.stepInit(input);
-//   while (_status === 'Active') {_status = this.step();}
-//   return _status === 'Accept';
-// };
-
-// AFND.prototype.status = function() {
-//   var nextChar = null;
-//   if (this.processor.status === 'Active') {
-//     if (this.processor.nextStep === 'input' && this.processor.input.length > this.processor.inputIndex) {
-//       nextChar = this.processor.input.substr(this.processor.inputIndex, 1);
-//     } else if (this.processor.nextStep === 'epsilons') {
-//       nextChar = '';
-//     }
-//   }
-//   return {
-//     states: this.processor.states,
-//     input: this.processor.input,
-//     inputIndex: this.processor.inputIndex,
-//     nextChar: nextChar,
-//     status: this.processor.status
-//   };
-// };
-
-// AFND.prototype.stepInit = function(input) {
-//   this.processor.input = input;
-//   this.processor.inputLength = this.processor.input.length;
-//   this.processor.inputIndex = 0;
-//   this.processor.states = [this.startState];
-//   this.processor.status = 'Active';
-//   this.processor.nextStep = 'epsilons';
-//   return this.updateStatus();
-// };
-// AFND.prototype.step = function() {
-//   switch (this.processor.nextStep) {
-//     case 'epsilons':
-//       this.followEpsilonTransitions();
-//       this.processor.nextStep = 'input';
-//       break;
-//     case 'input':
-//       var newStates = [];
-//       var char = this.processor.input.substr(this.processor.inputIndex, 1);
-//       var state = null;
-//       while (state = this.processor.states.shift()) {
-//         var tranStates = this.transition(state, char);
-//         if (tranStates) {$.each(tranStates, function(index, tranState) {
-//             if (newStates.indexOf(tranState) === -1) {newStates.push(tranState);}
-//         });}
-//       };
-//       ++this.processor.inputIndex;
-//       this.processor.states = newStates;
-//       this.processor.nextStep = 'epsilons';
-//       break;
-//   }
-//   return this.updateStatus();
-// };
-// AFND.prototype.followEpsilonTransitions = function() {
-//   var self = this;
-//   var changed = true;
-//   while (changed) {
-//     changed = false;
-//     $.each(self.processor.states, function(index, state) {
-//       var newStates = self.transition(state, '');
-//       if (newStates) {$.each(newStates, function(sIndex, newState) {
-//           var match = false;
-//           $.each(self.processor.states, function(oIndex, checkState) {
-//             if (checkState === newState) {
-//               match = true;
-//               return false; 
-//             }
-//           });
-//           if (!match) {
-//             changed = true;
-//             self.processor.states.push(newState);
-//           }
-//       });}
-//     });
-//   }
-// };
-// AFND.prototype.updateStatus = function() {
-//   var self = this;
-//   if (self.processor.states.length === 0) {
-//     self.processor.status = 'Reject';
-//   }
-//   if (self.processor.inputIndex === self.processor.inputLength) {
-//    $.each(self.processor.states, function(index, state) {
-//       if (self.acceptStates.indexOf(state) >= 0) {
-//         self.processor.status = 'Accept';
-//         return false; 
-//       }
-//     });
-//   }
-//   return self.processor.status;
-// };
-
+  return false;
+}
 });
+
