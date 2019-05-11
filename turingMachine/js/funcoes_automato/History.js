@@ -1,11 +1,12 @@
 function HistoryLog(input){
     this.expression = input;
     this.lista = [{
-      expression: input,
-      state: {},
+      read: '',
+      pointer:0,
+      expression: input.join(""),
+      state: {final: "q0", write: "", direction: "" },
     } ]; 
     this.pointer = 0;
-    this.time =-1;
     this.found = false;
     this.emptyLabel = 'ϵ';
   }
@@ -14,20 +15,15 @@ function HistoryLog(input){
     return this.expression[this.pointer];
   }
 
-  HistoryLog.prototype.addTime = function(){
-      this.time++;
-  }
-
   HistoryLog.prototype.clone = function(input){
-      var log = new HistoryLog(input);
-      log.lista = this.lista;
-      log.pointer = this.pointer;
-      log.time = this.time;
-      log.found = this.found;
-      return log;
+    var log = new HistoryLog(input);
+    log.lista = JSON.parse(JSON.stringify(this.lista));
+    log.pointer = this.pointer;
+    log.found = this.found;
+    return log;  
   }
 
-  HistoryLog.prototype.tapeFunction = function(state){
+  HistoryLog.prototype.tapeFunction = function(char, state){
     this.expression[this.pointer] = state.write;
     switch(state.direction){
         case 'L':
@@ -39,10 +35,11 @@ function HistoryLog(input){
             break;
         case 'R':
             this.pointer++;
-            if(this.pointer > this.expression.length ){
+            if(this.pointer >= this.expression.length ){
                 this.expression.push(this.emptyLabel);
             }
             break;
-    }
-    this.lista.push({expression: this.expression.toString() ,state: state});
+    }  
+    this.lista.push({read: char, pointer: this.pointer, expression: this.expression.join("") ,state: state});
+    
   }

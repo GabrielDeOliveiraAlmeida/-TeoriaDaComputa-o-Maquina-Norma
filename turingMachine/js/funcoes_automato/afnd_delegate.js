@@ -8,24 +8,21 @@ var afnd_delegate = (function () {
 
   var statusConnectors = [];
 
-  var updateUIForDebug = function () {
-    var status = afnd.status();
-
+  var updateUIForDebug = function(status) {
+    if(status === null) return;
+    
     $('.current').removeClass('current');
-    $.each(statusConnectors, function (index, connection) {
+
+    $.each(statusConnectors, function(index, connection) {
       connection.setPaintStyle(jsPlumb.Defaults.PaintStyle);
     });
-
-    var comparisonChar = status.nextChar === '' ? emptyLabel : status.nextChar;
-    $.each(status.states, function (index, state) {
-      var curState = $('#' + state).addClass('current');
-      jsPlumb.select({ source: state }).each(function (connection) {
-        if (connection.getLabel() === comparisonChar) {
-          statusConnectors.push(connection);
-          connection.setPaintStyle({ strokeStyle: 'green' });
-        }
-      });
-    });
+    
+    var comparisonChar = status.read;
+    console.log(status.state.final);
+    var curstatus = $('#' + status.state.final).addClass('current');
+    var connection = jsPlumb.select({source:status.state.final});
+    statusConnectors.push(connection);
+    connection.setPaintStyle({strokeStyle:'green'});
     return self;
   };
 

@@ -271,20 +271,25 @@ div.delete:hover {
   cursor: pointer;
 }
 
-#fsmDebugInputStatus {
+#fsmDebugInputStatus1 {
   display: inline-block;
 }
-
+#fsmDebugInputStatus2 {
+  display: inline-block;
+}
+#fsmDebugInputStatus3 {
+  display: inline-block;
+}
   span.consumedInput {
-    text-decoration: line-through;
+    text-decoration: underline overline;
+    font-weight: bold;
+    color:black;
   }
   span.currentInput {
-    font-weight: bold;
     margin-left: 4px;
     margin-right: 4px;
   }
   span.futureInput {
-    font-style: italic;
   }
 
 .fsmStatus {
