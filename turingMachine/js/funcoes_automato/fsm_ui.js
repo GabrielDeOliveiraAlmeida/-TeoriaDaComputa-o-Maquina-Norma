@@ -360,6 +360,7 @@ var fsm = (function () {
 		},
 
 		debug: function (input) {
+
 			if ($('#stopBtn').prop('disabled')) {
 				i = 1;
 				$('#testResult').html('&nbsp;');
@@ -378,25 +379,27 @@ var fsm = (function () {
 						color: '#fbb'
 					}, 1000);
 					return;
-				}
+				}else{
 				delegate.debugStart();
-				var status = delegate.fsm().firstStep();
-				// $('#fsmDebugInputStatus1 span.consumedInput').html(status.expression.substring(0,1));
-				// $('#fsmDebugInputStatus2 span.currentInput').html(status.expression.substring(1,status.expression.length));
-				delegate.updateUI(status);
-				tapeUI(status);
+					var status = delegate.fsm().firstStep();
+					// $('#fsmDebugInputStatus1 span.consumedInput').html(status.expression.substring(0,1));
+					// $('#fsmDebugInputStatus2 span.currentInput').html(status.expression.substring(1,status.expression.length));
+					delegate.updateUI(status);
+					tapeUI(status);
+				}
 			} else {
 				var status = delegate.fsm().stepByStep(i);
+				if(status === null)	$('#debugBtn').prop('disabled', true);
 				tapeUI(status);
 				delegate.updateUI(status);
 				i++;
-				$('#testResult').html('Aceito').effect('highlight', {
-					color: '#bfb',
-				}, 1000);
-				// if (status.status !== 'Active') {
-				// 	// 	$('#testResult').html(status.status === 'Accept' ? 'Aceito' : 'Rejeitado').effect('highlight', {color: status.status === 'Accept' ? '#bfb' : '#fbb'}, 1000);
-				// 	// 	$('#debugBtn').prop('disabled', true);
-				// }
+				if (delegate.fsm().getFound()) {
+						$('#testResult').html('Aceito').effect('highlight', {
+							color: '#bfb'}, 1000);
+				}else{
+					$('#testResult').html('Rejeitado').effect('highlight', {
+						color: '#fbb'}, 1000);
+				}
 			}
 			return self;
 		},
@@ -472,22 +475,3 @@ var fsm = (function () {
 
 
 /******************************************************************************/
-
-document.getElementById('selecttest').onchange = function () {
-	var valor = this.value;
-	if (valor == 1) {
-		document.getElementById('selecttest').value = 0;
-		this.value == 0;
-		fsm.teste();
-	}
-	if (valor == 2) {
-		document.getElementById('selecttest').value = 0;
-		this.value == 0;
-		fsm.ERT();
-	}
-	if (valor == 3) {
-		document.getElementById('selecttest').value = 0;
-		this.value == 0;
-		fsm.afndtoafd();
-	}
-};

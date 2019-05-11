@@ -208,4 +208,8 @@ $(function () {
     var log = this.history.lista[0];
     return log;
   }
+
+  AFND.prototype.getFound = function(){
+    return this.history.found;
+  }
 });
