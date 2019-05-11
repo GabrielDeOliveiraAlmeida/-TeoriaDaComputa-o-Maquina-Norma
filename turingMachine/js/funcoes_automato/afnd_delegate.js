@@ -18,7 +18,6 @@ var afnd_delegate = (function () {
     });
     
     var comparisonChar = status.read;
-    console.log(status.state.final);
     var curstatus = $('#' + status.state.final).addClass('current');
     var connection = jsPlumb.select({source:status.state.final});
     statusConnectors.push(connection);

@@ -183,12 +183,12 @@ var fsm = (function () {
 
 	var tapeUI = function (state) {
 		if (state === null) {
-			alert("Concluído")
+			alert("Simulação concluída");
 		} else {
 			var str1 = state.expression.substring(0, state.pointer);
 			var str2 = state.expression.substring(state.pointer, state.pointer + 1);
 			var str3 = state.expression.substring(state.pointer + 1, state.expression.length );
-			console.log(str1+"---"+str2+"---"+str3);	
+			// console.log(str1+"---"+str2+"---"+str3);	
 			$('#fsmDebugInputStatus1 span.currentInput').html(str1);
 			$('#fsmDebugInputStatus2 span.consumedInput').html(str2);
 			$('#fsmDebugInputStatus2 span.currentInput').html(str3);
@@ -381,8 +381,10 @@ var fsm = (function () {
 				}
 				delegate.debugStart();
 				var status = delegate.fsm().firstStep();
-				console.log(status);
+				// $('#fsmDebugInputStatus1 span.consumedInput').html(status.expression.substring(0,1));
+				// $('#fsmDebugInputStatus2 span.currentInput').html(status.expression.substring(1,status.expression.length));
 				delegate.updateUI(status);
+				tapeUI(status);
 			} else {
 				var status = delegate.fsm().stepByStep(i);
 				tapeUI(status);

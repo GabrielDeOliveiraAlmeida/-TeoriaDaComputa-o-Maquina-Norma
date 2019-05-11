@@ -130,8 +130,7 @@ $(function () {
     console.log("Executando Turing Machine '" + input + "'");
     var hist = new HistoryLog(input.split(""));
     this.history = this.step(hist, this.startState);
-    console.log("INPUT: " + this.history.found);
-    console.log(this.history);
+    console.log("RESULT: " + this.history.found);
     return this.history.found;
   };
 
