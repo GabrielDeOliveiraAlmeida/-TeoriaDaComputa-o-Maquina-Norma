@@ -33,9 +33,11 @@ var afnd_delegate = (function () {
     if (inputRead.length > 1) { inputRead = inputRead[0]; }
     if (inputWrite.length > 1) { inputWrite = inputWrite[0]; }
     if (inputRLS.length > 1) { inputRLS = inputRLS[0]; }
-
-    
-  
+    if(inputRLS != 'L' && inputRLS != 'R'){
+      $('#afndRL_dialog_readCharTxt').focus().select();
+      alert('Direção deve ser L ou R');
+      return;
+    }
 
     if (update) {
       afnd.removeTransition(dialogActiveConnection.sourceId, dialogActiveConnection.getLabel(), dialogActiveConnection.targetId);

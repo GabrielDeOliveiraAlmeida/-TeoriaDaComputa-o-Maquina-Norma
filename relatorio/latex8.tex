@@ -1,0 +1,246 @@
+
+%
+%  $Description: $ 
+%
+%  $Author: ienne $
+%  $Date: 1995/09/15 15:20:59 $
+%  $Revision: 1.4 $
+%
+
+\documentclass[times, 12pt,onecolumn]{article} %report há outros..
+%\documentstyle[times,art10,twocolumn,latex8]{article}  %EXEMPLO
+\usepackage{latex8}
+\usepackage{times}	%fonte
+\usepackage[brazil]{babel} 
+\usepackage[latin1]{inputenc} 
+\usepackage{indentfirst} %identação automatica, ou se nao todo novo paragrafo deve-se deixar uma linha em branco
+\usepackage{xcolor}
+% Definindo novas cores
+\definecolor{verde}{rgb}{0,0.5,0}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{amsmath,amsfonts,amssymb }
+\usepackage{array}
+\usepackage{float}
+\usepackage{hyperref}
+%%\usepackage[options ]{algorithm2e}
+
+\usepackage{listings}
+\lstset{
+  language=Java,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue},
+  stringstyle=\color{verde},
+  commentstyle=\color{red},
+  extendedchars=true,
+  showspaces=false,
+  showstringspaces=false,
+  numbers=left,
+  numberstyle=\tiny,
+  breaklines=true,
+  backgroundcolor=\color{green!10},
+  breakautoindent=true,
+  captionpos=b,
+  xleftmargin=0pt,
+}
+
+%Para Matematica
+\everymath{\displaystyle}  %USE ISSO
+\DeclareMathOperator{\sen}{sen}
+\DeclareMathOperator{\tg}{tg}
+\DeclareMathOperator{\cotg}{cotg}
+\DeclareMathOperator{\cossec}{cossec}
+\pagestyle{empty}
+\begin{document}
+
+%---------------------------------------------------------
+\title{Relatório 1 - Máquina de Turing}
+\author{Gabriel de Oliveira Almeida \and Gustavo Lopes Santana \and	João Victor Menezes}
+\maketitle
+
+\section{Introdução}
+Na disciplina de teoria da computação foi proposto elaborar uma ferramenta junto a esse respectivo relatório, que diz a respeito de visualização e validação de uma máquina de Turing representadas. A ferramenta será desenvolvida em um site Web, na qual será escrita em \textit{javascript}, junto a API \textit{JsPlumb Toolkit}.
+
+\section{Máquina de Turing}
+
+No projeto separamos os arquivos .js, em um arquivo para comunicação entre a máquina e a biblioteca utilizada para a representação gráfica deles que é o delegateAFND, e outro arquivo para implementação e percorrimento da fita.
+
+\begin{lstlisting}
+ 	this.transitions = {};
+  	this.startState = useDefaults ? 'start' : null;
+  	this.acceptStates = useDefaults ? ['accept'] : [];
+	this.history;
+\end{lstlisting}
+
+No trecho de código acima mostra as variáveis que serão utilizadas. 
+
+\begin{itemize}
+\item Transitions é um objeto que será guardado o estado referente, os caracteres da transição e o estado que está conectado.
+\item startState é uma variável que guarda o estado inicial.
+\item acceptStates é um vetor que guarda os estados finais da máquina.
+\item history é onde está guardado a fita
+\end{itemize}
+
+Função que adiciona a transição de estados. Recebe o estado inicial, o caractere a ser escrito, o caractere a ser lido, a direção da fita e o estado final da transição.
+
+\begin{lstlisting}
+ 	if (!this.transitions[stateA]) {
+      this.transitions[stateA] = {};
+    }
+    if (!this.transitions[stateA][inputRead]) {
+      this.transitions[stateA][inputRead] = [];
+    }
+    this.transitions[stateA][inputRead].push({
+      final: stateB,
+      write: inputWrite,
+      direction: inputRLS
+    });
+\end{lstlisting}
+
+A função stepInit pega uma cópia da fita para realizar as transições na máquina de Turing.
+\begin{lstlisting}
+ AFND.prototype.stepInit = function (input) {
+    this.i=1;
+    console.log("Executando Turing Machine '" + input + "'");
+    var hist = new HistoryLog(input.split(""));
+    this.history = this.step(hist, this.startState);
+    console.log("RESULT: " + this.history.found);
+    return this.history.found;
+};
+\end{lstlisting}
+
+
+\subsection{Máquina de Turing para XML}
+Foi utilizado a estrutura XML que é o objeto em Javascript.
+
+Essa primeira parte é o cabeçalho do XML que o JFlap usa.
+
+\begin{lstlisting}
+	var parser = new DOMParser()
+	var xml = parser.parseFromString('<?xml version="1.0" encoding="utf-8" standalone="no"?><structure></structure>', "application/xml");
+
+	var newElement
+
+	newElement = xml.createElement("type"); //cria um novo node 
+	xml.getElementsByTagName("structure")[0].appendChild(newElement);//aplica o novo node criado em um outro
+	xml.getElementsByTagName("type")[0].appendChild(xml.createTextNode('turing')); //atributo em um node
+
+	newElement = xml.createElement("automaton");
+xml.getElementsByTagName("structure")[0].appendChild(newElement);
+\end{lstlisting}	
+
+Depois vem a parte da tag <states>
+
+\begin{lstlisting}
+	$.each(model.states, function (state) {
+
+		if (state === 'q0') {
+			model.states[state].top = 55;
+			model.states[state].left = 55;
+			model.states[state].startState = true;
+		};
+		newElement = xml.createElement("state");
+		newElement.setAttribute("id", state.slice(1));
+		newElement.setAttribute("name", state);
+		xml.getElementsByTagName("automaton")[0].appendChild(newElement);
+
+		newElement = xml.createElement("x");
+		newElement.appendChild(xml.createTextNode(model.states[state].top + i * 51));
+		xml.getElementsByTagName("state")[i].appendChild(newElement);
+		newElement = xml.createElement("y");
+		newElement.appendChild(xml.createTextNode(model.states[state].left + i * 71));
+		xml.getElementsByTagName("state")[i].appendChild(newElement);
+
+		if (model.states[state].isAccept) {
+			newElement = xml.createElement("final"); //  final
+			xml.getElementsByTagName("state")[i].appendChild(newElement);
+		} else if (model.states[state].startState) {
+			newElement = xml.createElement("initial"); //initial 
+			xml.getElementsByTagName("state")[i].appendChild(newElement);
+
+		}
+		i++;
+	});
+\end{lstlisting}
+
+E por fim as transições.
+
+\begin{lstlisting}
+	$.each(model.transitions, function (index) {
+
+		newElement = xml.createElement("transition");
+		xml.getElementsByTagName("automaton")[0].appendChild(newElement);
+
+		newElement = xml.createElement("from");
+		newElement.appendChild(xml.createTextNode(model.transitions[index]['stateA'].slice(1)));
+		xml.getElementsByTagName("transition")[i].appendChild(newElement);
+
+		newElement = xml.createElement("to");
+		newElement.appendChild(xml.createTextNode(model.transitions[index]['stateB'].slice(1)));
+		xml.getElementsByTagName("transition")[i].appendChild(newElement);
+
+		newElement = xml.createElement("read");
+		if (model.transitions[index]['read'] == emptyLabel) {
+			newElement.appendChild(xml.createTextNode(model.transitions[index]['read']));
+			xml.getElementsByTagName("transition")[i].appendChild(newElement);
+		}
+		newElement = xml.createElement("write");
+		if (model.transitions[index]['write'] == emptyLabel) {
+			newElement.appendChild(xml.createTextNode(model.transitions[index]['write']));
+			xml.getElementsByTagName("transition")[i].appendChild(newElement);
+		}
+		newElement = xml.createElement("move");
+		newElement.appendChild(xml.createTextNode(model.transitions[index]['direction']));
+		xml.getElementsByTagName("transition")[i].appendChild(newElement);
+		i++;
+
+});
+\end{lstlisting}
+
+\subsection{XML para Máquina de Turing}
+
+Utilizamos de novo a estrutura XML, onde uma variável recebe esse objeto e percorremos esse objeto para criar a máquina.
+
+\begin{lstlisting}
+function convertJSON(xml) {
+
+	transitions = {};
+	acceptStates = [];
+
+	var node = xml.getElementsByTagName("type")[0];
+	node.childNodes[0].nodeValue;
+
+	for (var i = 0; i < xml.getElementsByTagName("state").length; i++) {
+
+		node = xml.getElementsByTagName("state")[i];
+
+		if (node.getElementsByTagName("initial")[0]) {
+			startState = ('q' + node.getAttribute("id"));
+		};
+		if (node.getElementsByTagName("final")[0]) {
+			acceptStates.push('q' + node.getAttribute("id"));
+		};
+	};
+
+	for (var i = 0; i < xml.getElementsByTagName("transition").length; i++) {
+
+		node = xml.getElementsByTagName("transition")[i];
+
+		var stateA = 'q' + node.getElementsByTagName("from")[0].childNodes[0].nodeValue;
+		var stateB = 'q' + node.getElementsByTagName("to")[0].childNodes[0].nodeValue;
+		var inputRead = (node.getElementsByTagName("read")[0].childNodes.length) ?
+		node.getElementsByTagName("read")[0].childNodes[0].nodeValue : emptyLabel;
+		var inputWrite = (node.getElementsByTagName("write")[0].childNodes.length) ?
+			node.getElementsByTagName("write")[0].childNodes[0].nodeValue : emptyLabel;
+		var inputRLS = node.getElementsByTagName("move")[0].childNodes[0].nodeValue;
+
+		if (!this.transitions[stateA]) { this.transitions[stateA] = {}; }
+		if (!this.transitions[stateA][inputRead]) { this.transitions[stateA][inputRead] = []; }
+		this.transitions[stateA][inputRead].push({ final: stateB, write: inputWrite, direction: inputRLS });
+
+	};
+
+return (serializeJSON());
+}
+\end{lstlisting}
+\end{document}
