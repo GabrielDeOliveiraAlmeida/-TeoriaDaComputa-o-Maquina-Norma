@@ -331,6 +331,7 @@ var fsm = (function () {
 		},
 
 		test: function (input) {
+
 			if ($.type(input) === 'string') {
 				$('#testResult').html('Testando...')
 				var accepts = delegate.fsm().accepts(input);

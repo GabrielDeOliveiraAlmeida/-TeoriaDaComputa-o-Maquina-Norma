@@ -120,12 +120,10 @@ $(function () {
   };
 
   AFND.prototype.accepts = function (input) {
-    if (this.stepInit(input)) {
-      return 'Accept';
-    }
-    return 'Reject';
+    return (this.stepInit(input));
   };
   AFND.prototype.stepInit = function (input) {
+    if(input == "") input = 'ϵ';
     this.i=1;
     console.log("Executando Turing Machine '" + input + "'");
     var hist = new HistoryLog(input.split(""));
