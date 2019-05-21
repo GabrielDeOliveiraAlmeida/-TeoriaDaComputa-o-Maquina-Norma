@@ -9,6 +9,7 @@ function HistoryLog(input){
     this.pointer = 0;
     this.found = false;
     this.emptyLabel = 'ϵ';
+    this.contador = 0;
   }
   
   HistoryLog.prototype.getRead= function(){
@@ -42,4 +43,9 @@ function HistoryLog(input){
     }  
     this.lista.push({read: char, pointer: this.pointer, expression: this.expression.join("") ,state: state});
     
+  }
+
+
+  HistoryLog.prototype.addCont = function(){
+    this.contador++;
   }

@@ -128,8 +128,8 @@ $(function () {
     console.log("Executando Turing Machine '" + input + "'");
     var hist = new HistoryLog(input.split(""));
     this.history = this.step(hist, this.startState);
-    console.log("RESULT: " + this.history.found);
-    return this.history.found;
+    console.log("RESULT: " + this.history.found + "  Count "  + this.history.contador);
+    return this.history;
   };
 
   AFND.prototype.step = function (log, state) {
@@ -148,7 +148,7 @@ $(function () {
       var newLog = log.clone(log.expression);
       newLog.tapeFunction(char, states[currentState]);
       var resultLog = this.step(newLog, states[currentState].final);
-
+      resultLog.addCont();
       if (this.isFinal(resultLog.lista[resultLog.lista.length - 1].state.final)) {
         console.log("State final is here");
         resultLog.found = true;

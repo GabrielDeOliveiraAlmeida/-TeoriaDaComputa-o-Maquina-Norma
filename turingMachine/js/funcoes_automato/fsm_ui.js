@@ -335,9 +335,10 @@ var fsm = (function () {
 			if ($.type(input) === 'string') {
 				$('#testResult').html('Testando...')
 				var accepts = delegate.fsm().accepts(input);
-				$('#testResult').html(accepts ? 'Aceito' : 'Rejeitado').effect('highlight', {
-					color: accepts ? '#bfb' : '#fbb'
+				$('#testResult').html(accepts.found ? 'Aceito' : 'Rejeitado').effect('highlight', {
+					color: accepts.found ? '#bfb' : '#fbb'
 				}, 1000);
+				$("#contador").html(accepts.contador);
 			} else {
 				$('#resultConsole').empty();
 				var makePendingEntry = function (input, type) {
@@ -346,11 +347,12 @@ var fsm = (function () {
 						title: 'Pending'
 					}).append(type + ' ' + (input === '' ? '[vazio]' : input)).appendTo('#resultConsole');
 				};
-				var updateEntry = function (result, entry) {
-					entry.removeClass('pending').addClass(result).attr('title', result).append(' --> ' + result);
+				var updateEntry = function (result, entry, contador) {
+					entry.removeClass('pending').addClass(result).attr('title', result).append(' -> ' + result + ' -> ' + contador);
 				};
 				$.each(input.accept, function (index, string) {
-					updateEntry((delegate.fsm().accepts(string) ? 'Passou' : 'Falhou'), makePendingEntry(string, ''));
+					var historia = delegate.fsm().accepts(string);
+					updateEntry(( historia.found ? 'Aceito' : 'Rejeitado'), makePendingEntry(string, ''), historia.contador);
 				});
 
 				$('#bulkResultHeader').effect('highlight', {
@@ -374,7 +376,7 @@ var fsm = (function () {
 
 				var teste = delegate.fsm().stepInit(input);
 				$('#fsmDebugInputStatus1 span.currentInput').html(input);
-				if (!teste) {
+				if (!teste.found) {
 					$('#fsmDebugInputStatus1 span.currentInput').html("Rejeitado");
 					$('#testResult').html('Rejeitado').effect('highlight', {
 						color: '#fbb'
@@ -387,11 +389,13 @@ var fsm = (function () {
 					// $('#fsmDebugInputStatus2 span.currentInput').html(status.expression.substring(1,status.expression.length));
 					delegate.updateUI(status);
 					tapeUI(status);
+					$("#contador").html(teste.contador);
 				}
 			} else {
 				var status = delegate.fsm().stepByStep(i);
 				if(status === null)	$('#debugBtn').prop('disabled', true);
 				tapeUI(status);
+
 				delegate.updateUI(status);
 				i++;
 				if (delegate.fsm().getFound()) {

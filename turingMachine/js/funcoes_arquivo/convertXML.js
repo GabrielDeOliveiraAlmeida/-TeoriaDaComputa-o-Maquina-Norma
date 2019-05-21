@@ -75,12 +75,12 @@ function convertXML(model) {
 		xml.getElementsByTagName("transition")[i].appendChild(newElement);
 
 		newElement = xml.createElement("read");
-		if (model.transitions[index]['read'] == emptyLabel) {
+		if (model.transitions[index]['read'] != emptyLabel) {
 			newElement.appendChild(xml.createTextNode(model.transitions[index]['read']));
 			xml.getElementsByTagName("transition")[i].appendChild(newElement);
 		}
 		newElement = xml.createElement("write");
-		if (model.transitions[index]['write'] == emptyLabel) {
+		if (model.transitions[index]['write'] != emptyLabel) {
 			newElement.appendChild(xml.createTextNode(model.transitions[index]['write']));
 			xml.getElementsByTagName("transition")[i].appendChild(newElement);
 		}
