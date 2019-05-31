@@ -14,41 +14,51 @@
     integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
 
-  <title>Turing Machine</title>
-  <link rel="stylesheet" type="text/css" href="turingMachine/css/smoothness/jquery-ui-1.10.0.custom.min.css" />
-  <link rel="stylesheet" type="text/css" href="turingMachine/css/fsm.css" />
-  <link rel="shortcut icon" href="turingMachine/images/Capturar.PNG" />
+  <title>Automatos Finitos</title>
+  <link rel="stylesheet" type="text/css" href="css/smoothness/jquery-ui-1.10.0.custom.min.css" />
+  <link rel="stylesheet" type="text/css" href="css/fsm.css" />
+  <link rel="shortcut icon" href="images/Capturar.PNG" />
 </head>
 
 <body>
 
   <div id="tools">
     <label>Testar:</label></br>
-    <input id="testString" type="text" value="" /></br></br>
+    <input id="testString" type="text" value="" /></br>
+    <input id="testString2" type="text" value="" /></br>
+    <input id="testString3" type="text" value="" /></br>
     <div style="text-align:center;">
       <button id="testBtn" onclick="fsm.test($('#testString').val());" title="Testar"><img
-          src="turingMachine/images/arrow_right.png" /></button>
+          src="images/arrow_right.png" /></button>
       <button id="debugBtn" onclick="fsm.debug($('#testString').val());" class="debuga" title="Passo a Passo"><img
-          src="turingMachine/images/icons8-botão-_play_-dentro-de-um-círculo-24.png" /></button>
+          src="images/icons8-botão-_play_-dentro-de-um-círculo-24.png" /></button>
       <button id="stopBtn" onclick="fsm.debugStop();" class="debuga" disabled="disabled"
-        title="Parar Passo a Passo"><img src="turingMachine/images/icons8-pausa-circular-24.png" /></button>
+        title="Parar Passo a Passo"><img src="images/icons8-pausa-circular-24.png" /></button>
     </div>
-    <div id="testResult">&nbsp;</div>
-    <label>Multiplas entradas (1 por linha):</label></br>
+    <br>
+    <!-- <div id="testResult">&nbsp;</div> -->
+    <label>Várias Entradas:</label>
+    <!-- <button id="bulkTestBtn" class="image" style="text-align:center;" -->
+    onclick="fsm.multEntradas();"
+    title="Testar multiplas entrada">
+    <img src="images/empty.png" /></button>
+
     <textarea id="acceptStrings" style="margin-bottom:5px;height: 100px;width: 170px;border: 1px solid #8bc34a;
     box-shadow: 0 0 0 0.2rem rgba(139, 195, 74, .25);-moz-border-radius: 10px;
-  -webkit-border-radius: 10px;resize: none;"></textarea>
-    </br></br>
+  -webkit-border-radius: 10px;resize: none;" ></textarea>
+  
     <label>Testar:</label>
     <button id="bulkTestBtn" class="image" style="margin-left:15px;"
       onclick="fsm.test({accept:$('#acceptStrings').val().split('\n'), reject:$('#acceptStrings').val().split('\n')});"
-      title="Testar multiplas entrada"><img src="images/empty.png" /></button></br></br>
+      title="Testar multiplas entrada">
+      <img src="images/empty.png" /></button>
     <label>Resultado:</label></br>
     <div id="resultConsole">
     </div>
   </div>
 
-  </br>
+
+
   <div id="openModal" class="modalDialog">
     <div>
       <a href="#close" title="Fechar" class="close">X</a>
@@ -65,42 +75,77 @@
   <div id="mainHolder">
     <h1>
       <button onclick="abrir();" class="mais" title="Abrir arquivo em formato jflap"><img
-          src="turingMachine/images/icons8-abrir-pasta-24.png" class="mais" /></button>
+          src="images/icons8-abrir-pasta-24.png" class="mais" /></button>
       <button class="mais" id="teste4" onclick="fsm.convertXML();" download="file.xml"
-        title="Baixar arquivo em formato jflap"><img src="turingMachine/images/icons8-salvar-24.png" class="mais" /></button>
-      <a href="#openModal" title="Ajuda" class="mais"><img src="turingMachine/images/icons8-ajuda-24.png" class="mais" /></a>
+        title="Baixar arquivo em formato jflap"><img src="images/icons8-salvar-24.png" class="mais" /></button>
+      <a href="#openModal" title="Ajuda" class="mais"><img src="images/icons8-ajuda-24.png" class="mais" /></a>
       <button class="delegate" title="Automato Finito Não Deterministico">AFND</button>
       <button id="addStateBtn" onclick="fsm.addState();" class="mais" style="margin-left: 320px;"
-        title="Adicionar estado"><img src="turingMachine/images/icons8-mais-50.png" class="mais" /></button>
-      <button id="resetBtn" onclick="fsm.reset();" class="mais" title="Limpar"><img src="turingMachine/images/icons8-apagar-24.png"
+        title="Adicionar estado"><img src="images/icons8-mais-50.png" class="mais" /></button>
+      <button id="resetBtn" onclick="fsm.reset();" class="mais" title="Limpar"><img src="images/icons8-apagar-24.png"
           class="mais" /></button>
-
+      Contador = <span id="contador" >0</span>
 
     </h1>
+
+
     <div id="machineGraph">
       <div id="AFDStatus" style="display:none;"></div>
     </div>
-    <h5 id="bulkResultHeader" style="text-align:left;">
-      <span id="fsmDebugInputStatus1" class="fsmStatus" style="display:none;">
-        <span class="consumedInput"></span>
-        <span class="currentInput"></span>
-        <span class="futureInput"></span>
-      </span>
-      <span id="fsmDebugInputStatus2" class="fsmStatus" style="display:none;">
-        <span class="consumedInput"></span>
-        <span class="currentInput"></span>
-        <span class="futureInput"></span>
-      </span>
-      <span id="fsmDebugInputStatus3" class="fsmStatus" style="display:none;">
-        <span class="consumedInput"></span>
-        <span class="currentInput"></span>
-        <span class="futureInput"></span>
-      </span>
-    </h5>
-    <br>
     <input type='file' accept='.jff' id="filein" onchange='abreAe(event);' style="visibility: hidden;">
 
   </div>
+  <!-- <h6 id="bulkResultHeader" style="text-align:left;">
+    <span id="fsmDebugInputStatus11" class="fsmStatus">
+      <span class="consumedInput"></span>
+      <span class="currentInput"></span>
+      <span class="futureInput"></span>
+    </span>
+    <span id="fsmDebugInputStatus12" class="fsmStatus">
+      <span class="consumedInput"></span>
+      <span class="currentInput"></span>
+      <span class="futureInput"></span>
+    </span>
+    <span id="fsmDebugInputStatus13" class="fsmStatus">
+      <span class="consumedInput"></span>
+      <span class="currentInput"></span>
+      <span class="futureInput"></span>
+    </span>
+  </h6>
+  <h6 id="bulkResultHeader2" style="text-align:left;">
+    <span id="fsmDebugInputStatus21" class="fsmStatus">
+      <span class="consumedInput"></span>
+      <span class="currentInput"></span>
+      <span class="futureInput"></span>
+    </span>
+    <span id="fsmDebugInputStatus22" class="fsmStatus">
+      <span class="consumedInput"></span>
+      <span class="currentInput"></span>
+      <span class="futureInput"></span>
+    </span>
+    <span id="fsmDebugInputStatus23" class="fsmStatus">
+      <span class="consumedInput"></span>
+      <span class="currentInput"></span>
+      <span class="futureInput"></span>
+    </span>
+  </h6>
+  <h6 id="bulkResultHeader3" style="text-align:left;">
+    <span id="fsmDebugInputStatus31" class="fsmStatus">
+      <span class="consumedInput"></span>
+      <span class="currentInput"></span>
+      <span class="futureInput"></span>
+    </span>
+    <span id="fsmDebugInputStatus32" class="fsmStatus" style="display:none;">
+      <span class="consumedInput"></span>
+      <span class="currentInput"></span>
+      <span class="futureInput"></span>
+    </span>
+    <span id="fsmDebugInputStatus33" class="fsmStatus" style="display:none;">
+      <span class="consumedInput"></span>
+      <span class="currentInput"></span>
+      <span class="futureInput"></span>
+    </span> 
+  </h6>-->
   <script type="text/javascript">
     //script para ler o arquivo
 
@@ -123,17 +168,23 @@
     };
   </script>
 
-  <script src="turingMachine/js/bibliotecas/jquery-1.9.0.min.js"></script>
-  <script src="turingMachine/js/bibliotecas/jquery-ui-1.10.0.custom.min.js"></script>
-  <script src="turingMachine/js/bibliotecas/jquery.jsPlumb-1.3.16-all-min.js"></script>
-  <script src="turingMachine/js/funcoes_automato/AFND.js"></script>
-  <script src="turingMachine/js/funcoes_automato/fsm_ui.js"></script>
-  <script src="turingMachine/js/funcoes_automato/afnd_delegate.js"></script>
-  <script src="turingMachine/js/funcoes_automato/History.js"></script>
-  <script src="turingMachine/js/funcoes_arquivo/convertXML.js"></script>
-  <script src="turingMachine/js/funcoes_arquivo/convertJSON.js"></script>
-  <script src="turingMachine/js/funcoes_arquivo/underscore.js"></script>
-  <script src="turingMachine/js/funcoes_automato/MultHistoryLog.js"></script>
+<script src="turingMachine/js/bibliotecas/jquery-1.9.0.min.js"></script>
+<script src="turingMachine/js/bibliotecas/jquery-ui-1.10.0.custom.min.js"></script>
+<script src="turingMachine/js/bibliotecas/jquery.jsPlumb-1.3.16-all-min.js"></script>
+<script src="turingMachine/js/funcoes_automato/AFND.js"></script>
+<script src="turingMachine/js/funcoes_automato/fsm_ui.js"></script>
+<script src="turingMachine/js/funcoes_automato/afnd_delegate.js"></script>
+<script src="turingMachine/js/funcoes_automato/History.js"></script>
+<script src="turingMachine/js/funcoes_arquivo/convertXML.js"></script>
+<script src="turingMachine/js/funcoes_arquivo/convertJSON.js"></script>
+<script src="turingMachine/js/funcoes_arquivo/underscore.js"></script>
+<script src="turingMachine/js/funcoes_automato/MultHistoryLog.js"></script>
+  <script>
+    tam = 3;
+  </script>
+
+  </script>
 </body>
 
 </html>
+
