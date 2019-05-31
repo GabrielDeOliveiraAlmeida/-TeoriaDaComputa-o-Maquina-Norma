@@ -360,7 +360,8 @@ var fsm = (function () {
 			return self;
 		},
 
-		debug: function (input) {
+		debug: function () {
+			var input = $('#testString').val();
 			var input2 = $('#testString2').val();
 			var input3 = $('#testString3').val();
 			if ($('#stopBtn').prop('disabled')) {

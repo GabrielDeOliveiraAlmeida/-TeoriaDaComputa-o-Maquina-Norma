@@ -214,18 +214,18 @@ $(function () {
     return false;
   }
 
-  AFND.prototype.status = function () {
-    var log = this.history.lista;
-    for (var i = 1; i < log.length; i++) {
-      var conteudo = log[i - 1].expression;
-      var char = log[i].read;
-      var state = log[i].state.final;
-      var write = log[i].state.write;
-      var direction = log[i].state.direction;
-      console.log("Tape content: " + conteudo + " Move to State: " + state +
-        " Transitions (" + char + " | " + write + " | " + direction + " ) ---> " + log[i].expression);
-    }
-  };
+  // AFND.prototype.status = function () {
+  //   var log = this.history.lista;
+  //   for (var i = 1; i < log.length; i++) {
+  //     var conteudo = log[i - 1].expression;
+  //     var char = log[i].read;
+  //     var state = log[i].state.final;
+  //     var write = log[i].state.write;
+  //     var direction = log[i].state.direction;
+  //     console.log("Tape content: " + conteudo + " Move to State: " + state +
+  //       " Transitions (" + char + " | " + write + " | " + direction + " ) ---> " + log[i].expression);
+  //   }
+  // };
 
 
   AFND.prototype.stepByStep = function (id, i) {

@@ -3,6 +3,7 @@ var afnd_delegate = (function () {
   var afnd = null;
   var container = null;
   var dialogDiv = null;
+  var stepDiv = null;
   var dialogActiveConnection = null;
   var emptyLabel = 'ϵ';
 
@@ -81,6 +82,73 @@ var afnd_delegate = (function () {
     dialogActiveConnection = null;
   };
 
+  var stepDialog = function () {
+
+    stepDiv = $('<div></div>', { style: 'text-align:center;' });
+    $('<label>Fita 1</label>\
+    <div id="bulkResultHeader" style="text-align:left;">\
+    <span id="fsmDebugInputStatus11" class="fsmStatus">\
+      <span class="consumedInput"></span>\
+      <span class="currentInput"></span>\
+      <span class="futureInput"></span>\
+    </span>\
+    <span id="fsmDebugInputStatus12" class="fsmStatus">\
+      <span class="consumedInput"></span>\
+      <span class="currentInput"></span>\
+      <span class="futureInput"></span>\
+    </span>\
+    <span id="fsmDebugInputStatus13" class="fsmStatus">\
+      <span class="consumedInput"></span>\
+      <span class="currentInput"></span>\
+      <span class="futureInput"></span>\
+    </span>\
+  </div>\
+  <label>Fita 2</label>\
+  <div id="bulkResultHeader2" style="text-align:left;">\
+    <span id="fsmDebugInputStatus21" class="fsmStatus">\
+      <span class="consumedInput"></span>\
+      <span class="currentInput"></span>\
+      <span class="futureInput"></span>\
+    </span>\
+    <span id="fsmDebugInputStatus22" class="fsmStatus">\
+      <span class="consumedInput"></span>\
+      <span class="currentInput"></span>\
+      <span class="futureInput"></span>\
+    </span>\
+    <span id="fsmDebugInputStatus23" class="fsmStatus">\
+      <span class="consumedInput"></span>\
+      <span class="currentInput"></span>\
+      <span class="futureInput"></span>\
+    </span>\
+  </div>\
+  <label>Fita 3</label>\
+  <div id="bulkResultHeader3" style="text-align:left;">\
+    <span id="fsmDebugInputStatus31" class="fsmStatus">\
+      <span class="consumedInput"></span>\
+      <span class="currentInput"></span>\
+      <span class="futureInput"></span>\
+    </span>\
+    <span id="fsmDebugInputStatus32" class="fsmStatus" style="display:none;">\
+      <span class="consumedInput"></span>\
+      <span class="currentInput"></span>\
+      <span class="futureInput"></span>\
+    </span>\
+    <span id="fsmDebugInputStatus33" class="fsmStatus" style="display:none;">\
+      <span class="consumedInput"></span>\
+      <span class="currentInput"></span>\
+      <span class="futureInput"></span>\
+    </span> </div>').appendTo(stepDiv);
+
+    stepDiv.dialog({
+      dialogClass: "no-close",
+      autoOpen: false,
+      title: 'Passo a Passo',
+      height: 400,
+      width: 500,
+      modal: true,
+      open: function () {}
+    });
+  };
   var makeDialog = function () {
     dialogDiv = $('<div></div>', { style: 'text-align:center;' });
     $('<div></div>', { style: 'font-size:small;' }).html('Deixe em branco para vazio: ' + emptyLabel + '<br />').appendTo(dialogDiv);
@@ -196,10 +264,12 @@ var afnd_delegate = (function () {
     });
   };
 
+
   return {
     init: function () {
       self = this;
       afnd = new AFND();
+      stepDialog();
       makeDialog();
       return self;
     },
@@ -267,11 +337,16 @@ var afnd_delegate = (function () {
     },
 
     debugStart: function () {
+      stepDiv.dialog('option','buttons',{
+      Proximo: function(){fsm.debug()},
+      Parar: function(){fsm.debugStop();}
+      }).dialog("open");;
       return self;
     },
 
     debugStop: function () {
       $('.current').removeClass('current');
+      stepDiv.dialog("close");
       return self;
     },
 

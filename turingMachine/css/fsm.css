@@ -232,8 +232,8 @@ span.futureInput {}
 .fsmStatus {
   padding-left: 2px;
   padding-right: 2px;
-  font-size: 34pt;
-  color: white;
+  font-size: 20pt;
+  color: green;
   letter-spacing: 2px;
 }
 
