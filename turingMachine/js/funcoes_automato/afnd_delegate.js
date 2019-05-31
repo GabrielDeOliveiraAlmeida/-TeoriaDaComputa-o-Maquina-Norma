@@ -189,8 +189,8 @@ var afnd_delegate = (function () {
       dialogClass: "no-close",
       autoOpen: false,
       title: 'Entre com transição',
-      height: 220,
-      width: 350,
+      height: 250,
+      width: 500,
       modal: true,
       open: function () { dialogDiv.find('afnd_dialog_readCharTxt').focus().select(); }
     });

@@ -40,11 +40,11 @@
     <textarea id="acceptStrings" style="margin-bottom:5px;height: 100px;width: 170px;border: 1px solid #8bc34a;
     box-shadow: 0 0 0 0.2rem rgba(139, 195, 74, .25);-moz-border-radius: 10px;
   -webkit-border-radius: 10px;resize: none;"></textarea>
-    </br></br>
     <label>Testar:</label>
     <button id="bulkTestBtn" class="image" style="margin-left:15px;"
       onclick="fsm.test({accept:$('#acceptStrings').val().split('\n'), reject:$('#acceptStrings').val().split('\n')});"
-      title="Testar multiplas entrada"><img src="images/empty.png" /></button></br></br>
+      title="Testar multiplas entrada">
+      <img src="images/empty.png" /></button>
     <label>Resultado:</label></br>
     <div id="resultConsole">
     </div>
@@ -76,9 +76,11 @@
         title="Adicionar estado"><img src="images/icons8-mais-50.png" class="mais" /></button>
       <button id="resetBtn" onclick="fsm.reset();" class="mais" title="Limpar"><img src="images/icons8-apagar-24.png"
           class="mais" /></button>
-      <span id="contador" >0</span>
+      Contador = <span id="contador" >0</span>
 
     </h1>
+
+
     <div id="machineGraph">
       <div id="AFDStatus" style="display:none;"></div>
     </div>
