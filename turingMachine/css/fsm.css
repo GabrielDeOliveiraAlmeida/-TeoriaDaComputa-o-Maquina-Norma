@@ -1,3 +1,7 @@
+#contador{
+  font-size: 25px;
+}
+
 #mask {position:absolute;
 z-index:9000;  
 background-color:#000; 

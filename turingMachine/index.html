@@ -24,7 +24,9 @@
 
   <div id="tools">
     <label>Testar:</label></br>
-    <input id="testString" type="text" value="" /></br></br>
+    <input id="testString" type="text" value="" /></br>
+    <input id="testString2" type="text" value="" /></br>
+    <input id="testString3" type="text" value="" /></br>
     <div style="text-align:center;">
       <button id="testBtn" onclick="fsm.test($('#testString').val());" title="Testar"><img
           src="images/arrow_right.png" /></button>
@@ -74,33 +76,66 @@
         title="Adicionar estado"><img src="images/icons8-mais-50.png" class="mais" /></button>
       <button id="resetBtn" onclick="fsm.reset();" class="mais" title="Limpar"><img src="images/icons8-apagar-24.png"
           class="mais" /></button>
-
+      <span id="contador" >0</span>
 
     </h1>
     <div id="machineGraph">
       <div id="AFDStatus" style="display:none;"></div>
     </div>
-    <h5 id="bulkResultHeader" style="text-align:left;">
-      <span id="fsmDebugInputStatus1" class="fsmStatus" style="display:none;">
-        <span class="consumedInput"></span>
-        <span class="currentInput"></span>
-        <span class="futureInput"></span>
-      </span>
-      <span id="fsmDebugInputStatus2" class="fsmStatus" style="display:none;">
-        <span class="consumedInput"></span>
-        <span class="currentInput"></span>
-        <span class="futureInput"></span>
-      </span>
-      <span id="fsmDebugInputStatus3" class="fsmStatus" style="display:none;">
-        <span class="consumedInput"></span>
-        <span class="currentInput"></span>
-        <span class="futureInput"></span>
-      </span>
-    </h5>
-    <br>
     <input type='file' accept='.jff' id="filein" onchange='abreAe(event);' style="visibility: hidden;">
 
   </div>
+  <h6 id="bulkResultHeader" style="text-align:left;">
+    <span id="fsmDebugInputStatus11" class="fsmStatus">
+      <span class="consumedInput"></span>
+      <span class="currentInput"></span>
+      <span class="futureInput"></span>
+    </span>
+    <span id="fsmDebugInputStatus12" class="fsmStatus">
+      <span class="consumedInput"></span>
+      <span class="currentInput"></span>
+      <span class="futureInput"></span>
+    </span>
+    <span id="fsmDebugInputStatus13" class="fsmStatus">
+      <span class="consumedInput"></span>
+      <span class="currentInput"></span>
+      <span class="futureInput"></span>
+    </span>
+  </h6>
+  <h6 id="bulkResultHeader2" style="text-align:left;">
+    <span id="fsmDebugInputStatus21" class="fsmStatus">
+      <span class="consumedInput"></span>
+      <span class="currentInput"></span>
+      <span class="futureInput"></span>
+    </span>
+    <span id="fsmDebugInputStatus22" class="fsmStatus">
+      <span class="consumedInput"></span>
+      <span class="currentInput"></span>
+      <span class="futureInput"></span>
+    </span>
+    <span id="fsmDebugInputStatus23" class="fsmStatus">
+      <span class="consumedInput"></span>
+      <span class="currentInput"></span>
+      <span class="futureInput"></span>
+    </span>
+  </h6>
+  <h6 id="bulkResultHeader3" style="text-align:left;">
+    <span id="fsmDebugInputStatus31" class="fsmStatus">
+      <span class="consumedInput"></span>
+      <span class="currentInput"></span>
+      <span class="futureInput"></span>
+    </span>
+    <span id="fsmDebugInputStatus32" class="fsmStatus" style="display:none;">
+      <span class="consumedInput"></span>
+      <span class="currentInput"></span>
+      <span class="futureInput"></span>
+    </span>
+    <span id="fsmDebugInputStatus33" class="fsmStatus" style="display:none;">
+      <span class="consumedInput"></span>
+      <span class="currentInput"></span>
+      <span class="futureInput"></span>
+    </span>
+  </h6>
   <script type="text/javascript">
     //script para ler o arquivo
 
@@ -133,6 +168,10 @@
   <script src="js/funcoes_arquivo/convertXML.js"></script>
   <script src="js/funcoes_arquivo/convertJSON.js"></script>
   <script src="js/funcoes_arquivo/underscore.js"></script>
+  <script src="js/funcoes_automato/MultHistoryLog.js"></script>
+  <script>
+    tam = 3;
+  </script>
 </body>
 
 </html>

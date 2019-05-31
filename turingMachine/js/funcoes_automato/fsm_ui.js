@@ -181,18 +181,15 @@ var fsm = (function () {
 	};
 
 
-	var tapeUI = function (state) {
-		if (state === null) {
-			alert("Simulação concluída");
-		} else {
+	var tapeUI = function (id, state) {
 			var str1 = state.expression.substring(0, state.pointer);
 			var str2 = state.expression.substring(state.pointer, state.pointer + 1);
-			var str3 = state.expression.substring(state.pointer + 1, state.expression.length );
-			// console.log(str1+"---"+str2+"---"+str3);	
-			$('#fsmDebugInputStatus1 span.currentInput').html(str1);
-			$('#fsmDebugInputStatus2 span.consumedInput').html(str2);
-			$('#fsmDebugInputStatus2 span.currentInput').html(str3);
-		}
+			var str3 = state.expression.substring(state.pointer + 1, state.expression.length);
+			 console.log(str1+"<->"+str2+"<->"+str3);	
+			
+			$('#' + id + '1 span.currentInput').html(str1);
+			$('#' + id + '2 span.consumedInput').html(str2);
+			$('#' + id + '2 span.currentInput').html(str3);
 	};
 
 	var connectionClicked = function (connection) {
@@ -331,10 +328,11 @@ var fsm = (function () {
 		},
 
 		test: function (input) {
-
+			var input2 = $('#testString2').val();
+			var input3 = $('#testString3').val();
 			if ($.type(input) === 'string') {
 				$('#testResult').html('Testando...')
-				var accepts = delegate.fsm().accepts(input);
+				var accepts = delegate.fsm().accepts(input, input2, input3);
 				$('#testResult').html(accepts.found ? 'Aceito' : 'Rejeitado').effect('highlight', {
 					color: accepts.found ? '#bfb' : '#fbb'
 				}, 1000);
@@ -352,7 +350,7 @@ var fsm = (function () {
 				};
 				$.each(input.accept, function (index, string) {
 					var historia = delegate.fsm().accepts(string);
-					updateEntry(( historia.found ? 'Aceito' : 'Rejeitado'), makePendingEntry(string, ''), historia.contador);
+					updateEntry((historia.found ? 'Aceito' : 'Rejeitado'), makePendingEntry(string, ''), historia.contador);
 				});
 
 				$('#bulkResultHeader').effect('highlight', {
@@ -363,59 +361,89 @@ var fsm = (function () {
 		},
 
 		debug: function (input) {
-
+			var input2 = $('#testString2').val();
+			var input3 = $('#testString3').val();
 			if ($('#stopBtn').prop('disabled')) {
 				i = 1;
 				$('#testResult').html('&nbsp;');
 				$('#stopBtn').prop('disabled', false);
-				$('#loadBtn, #testBtn, #bulkTestBtn, #testString, #resetBtn').prop('disabled', true);
+				$('#loadBtn, #testBtn, #bulkTestBtn, #testString, #testString2,#testString3,#resetBtn').prop('disabled', true);
 				$('button.delegate').prop('disabled', true);
-				$('#fsmDebugInputStatus1').show();
-				$('#fsmDebugInputStatus2').show();
-				$('#fsmDebugInputStatus3').show();
 
-				var teste = delegate.fsm().stepInit(input);
+				$('#fsmDebugInputStatus11').show();
+				$('#fsmDebugInputStatus12').show();
+				$('#fsmDebugInputStatus13').show();
+				$('#fsmDebugInputStatus21').show();
+				$('#fsmDebugInputStatus22').show();
+				$('#fsmDebugInputStatus23').show();
+				$('#fsmDebugInputStatus31').show();
+				$('#fsmDebugInputStatus32').show();
+				$('#fsmDebugInputStatus33').show();
+
+				var teste = delegate.fsm().stepInit(input, input2, input3);
+
 				$('#fsmDebugInputStatus1 span.currentInput').html(input);
+				$('#fsmDebugInputStatus4 span.currentInput').html(input);
+				$('#fsmDebugInputStatus7 span.currentInput').html(input);
 				if (!teste.found) {
 					$('#fsmDebugInputStatus1 span.currentInput').html("Rejeitado");
 					$('#testResult').html('Rejeitado').effect('highlight', {
 						color: '#fbb'
 					}, 1000);
 					return;
-				}else{
-				delegate.debugStart();
-					var status = delegate.fsm().firstStep();
+				} else {
+					delegate.debugStart();
+					var status = delegate.fsm().firstStep(1);
+					var status2 = delegate.fsm().firstStep(2);
+					var status3 = delegate.fsm().firstStep(3);
 					// $('#fsmDebugInputStatus1 span.consumedInput').html(status.expression.substring(0,1));
 					// $('#fsmDebugInputStatus2 span.currentInput').html(status.expression.substring(1,status.expression.length));
 					delegate.updateUI(status);
-					tapeUI(status);
+					tapeUI('fsmDebugInputStatus1', status);
+					tapeUI('fsmDebugInputStatus2', status2);
+					tapeUI('fsmDebugInputStatus3', status3);
 					$("#contador").html(teste.contador);
 				}
 			} else {
-				var status = delegate.fsm().stepByStep(i);
-				if(status === null)	$('#debugBtn').prop('disabled', true);
-				tapeUI(status);
-
+				var status = delegate.fsm().stepByStep(1, i);
+				var status2 = delegate.fsm().stepByStep(2, i);
+				var status3 = delegate.fsm().stepByStep(3, i);
+				if (status == null || status2 == null || status3 == null) {
+					alert("Simulação concluída");
+					$('#debugBtn').prop('disabled', true);
+				} else {
+					tapeUI('fsmDebugInputStatus1', status);
+					tapeUI('fsmDebugInputStatus2', status2);
+					tapeUI('fsmDebugInputStatus3', status3);
+				}
 				delegate.updateUI(status);
 				i++;
 				if (delegate.fsm().getFound()) {
-						$('#testResult').html('Aceito').effect('highlight', {
-							color: '#bfb'}, 1000);
-				}else{
+					$('#testResult').html('Aceito').effect('highlight', {
+						color: '#bfb'
+					}, 1000);
+				} else {
 					$('#testResult').html('Rejeitado').effect('highlight', {
-						color: '#fbb'}, 1000);
+						color: '#fbb'
+					}, 1000);
 				}
 			}
 			return self;
 		},
 
 		debugStop: function () {
-			$('#fsmDebugInputStatus1').hide();
-			$('#fsmDebugInputStatus2').hide();
-			$('#fsmDebugInputStatus3').hide();
+			$('#fsmDebugInputStatus11').hide();
+			$('#fsmDebugInputStatus12').hide();
+			$('#fsmDebugInputStatus13').hide();
+			$('#fsmDebugInputStatus21').hide();
+			$('#fsmDebugInputStatus22').hide();
+			$('#fsmDebugInputStatus23').hide();
+			$('#fsmDebugInputStatus31').hide();
+			$('#fsmDebugInputStatus32').hide();
+			$('#fsmDebugInputStatus33').hide();
 
 			$('#stopBtn').prop('disabled', true);
-			$('#loadBtn, #testBtn, #bulkTestBtn, #debugBtn, #testString, #resetBtn').prop('disabled', false);
+			$('#loadBtn, #testBtn, #bulkTestBtn, #debugBtn, #testString, #testString2,#testString3,#resetBtn').prop('disabled', false);
 			$('button.delegate').prop('disabled', false).each(function () {
 				switch ($(this).html()) {
 					case 'AFD':
@@ -437,6 +465,8 @@ var fsm = (function () {
 		reset: function () {
 			self.setDelegate(delegate);
 			$('#testString').val('');
+			$('#testString2').val('');
+			$('#testString3').val('');
 			$('#testResult').html('&nbsp;');
 			$('#acceptStrings').val('');
 			$('#rejectStrings').val('');

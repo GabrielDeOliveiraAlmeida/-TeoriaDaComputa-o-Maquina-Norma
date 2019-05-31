@@ -26,29 +26,43 @@ var afnd_delegate = (function () {
   };
 
   var dialogSave = function (update) {
+    if (update) {
+      afnd.removeTransition(dialogActiveConnection.sourceId, dialogActiveConnection.getLabel(), dialogActiveConnection.targetId);
+    }
+    
     var inputRead = $('#afnd_dialog_readCharTxt').val();
     var inputWrite = $('#afnd2_dialog_readCharTxt').val();
     var inputRLS = $('#afndRL_dialog_readCharTxt').val();
+    var inputRead2 = $('#afnd_dialog_readCharTxtP2').val();
+    var inputWrite2 = $('#afnd2_dialog_readCharTxtP2').val();
+    var inputRLS2 = $('#afndRL_dialog_readCharTxtP2').val();
+    var inputRead3 = $('#afnd_dialog_readCharTxtP3').val();
+    var inputWrite3 = $('#afnd2_dialog_readCharTxtP3').val();
+    var inputRLS3 = $('#afndRL_dialog_readCharTxtP3').val();
 
     if (inputRead.length > 1) { inputRead = inputRead[0]; }
     if (inputWrite.length > 1) { inputWrite = inputWrite[0]; }
     if (inputRLS.length > 1) { inputRLS = inputRLS[0]; }
-    if(inputRLS != 'L' && inputRLS != 'R'){
+    if(inputRLS != 'L' && inputRLS != 'R' && inputRLS != 'S'){
       $('#afndRL_dialog_readCharTxt').focus().select();
-      alert('Direção deve ser L ou R');
+      alert('Direção deve ser L, R ou S');
       return;
     }
 
-    if (update) {
-      afnd.removeTransition(dialogActiveConnection.sourceId, dialogActiveConnection.getLabel(), dialogActiveConnection.targetId);
-    } if (afnd.hasTransition(dialogActiveConnection.sourceId, inputRead, inputWrite, inputRLS, dialogActiveConnection.targetId)) {
+
+    tr ={inputRead: inputRead, inputWrite: inputWrite, direction: inputRLS, final: dialogActiveConnection.targetId};
+    tr2={inputRead: inputRead2, inputWrite: inputWrite2, direction: inputRLS2, final: dialogActiveConnection.targetId};
+    tr3 ={inputRead: inputRead3, inputWrite: inputWrite3, direction: inputRLS3, final: dialogActiveConnection.targetId};
+
+    console.log(tr);
+    if (afnd.hasTransition(dialogActiveConnection.sourceId, tr, tr2, tr3)) {
       alert(dialogActiveConnection.sourceId + " já existe transição para " + dialogActiveConnection.targetId + " em " + (inputRead || emptyLabel));
       return;
     }
     //dialog={inputRead, write: inputWrite, direction: inputRLS || emptyLabel}
-    dialog = inputRead + " " + inputWrite + " " + inputRLS;
+    dialog = "["+inputRead + "," + inputWrite + "," + inputRLS+"]["+inputRead2 + "," + inputWrite2 + "," + inputRLS2+"]["+inputRead3 + "," + inputWrite3 + "," + inputRLS3+"]";
     dialogActiveConnection.setLabel(dialog || emptyLabel);
-    afnd.addTransition(dialogActiveConnection.sourceId, inputRead, inputWrite, inputRLS, dialogActiveConnection.targetId);
+    afnd.addTransition(dialogActiveConnection.sourceId, tr,tr2,tr3);
     dialogDiv.dialog("close");
   };
 
@@ -72,7 +86,7 @@ var afnd_delegate = (function () {
     $('<div></div>', { style: 'font-size:small;' }).html('Deixe em branco para vazio: ' + emptyLabel + '<br />').appendTo(dialogDiv);
     $('<span></span>', { id: 'afnd_dialog_stateA', 'class': 'tranStart' }).appendTo(dialogDiv);
     $('<input />', { id: 'afnd_dialog_readCharTxt', type: 'text', maxlength: 1, style: 'width:30px;text-align:center;' })
-      .val('a')
+      .val(emptyLabel)
       .focusout(function(){
         if($(this).val() == ""){
           $(this).val(emptyLabel);
@@ -83,7 +97,7 @@ var afnd_delegate = (function () {
       })
       .appendTo(dialogDiv);
     $('<input />', { id: 'afnd2_dialog_readCharTxt', type: 'text', maxlength: 1, style: 'width:30px;text-align:center;' })
-      .val('A')
+      .val(emptyLabel)
       .focusout(function(){
         if($(this).val() == ""){
           $(this).val(emptyLabel);
@@ -96,11 +110,80 @@ var afnd_delegate = (function () {
     $('<input/>', { id: 'afndRL_dialog_readCharTxt', type: 'text', maxlength: 1, style: 'width:30px;text-align:center;' })
       .val('R')
       .keypress(function (event) {
+        if (event.which === $.ui.keyCode.ENTER) { $(this).next(':input').focus().select();  }
+      })
+      .appendTo(dialogDiv);
+
+
+      //OPA NOVO CODIGO PARA SEGUNDA PILHA, OPA
+      $('<span></span>', { id: 'afnd_dialog_stateA', 'class': 'tranStart' }).appendTo(dialogDiv);
+    $('<input />', { id: 'afnd_dialog_readCharTxtP2', type: 'text', maxlength: 1, style: 'width:30px;text-align:center;' })
+      .val(emptyLabel)
+      .focusout(function(){
+        if($(this).val() == ""){
+          $(this).val(emptyLabel);
+        }
+      })
+      .keypress(function (event) {
+        if (event.which === $.ui.keyCode.ENTER) { $(this).next(':input').focus().select(); }
+      })
+      .appendTo(dialogDiv);
+    $('<input />', { id: 'afnd2_dialog_readCharTxtP2', type: 'text', maxlength: 1, style: 'width:30px;text-align:center;' })
+      .val(emptyLabel)
+      .focusout(function(){
+        if($(this).val() == ""){
+          $(this).val(emptyLabel);
+        }
+      })
+      .keypress(function (event) {
+        if (event.which === $.ui.keyCode.ENTER) { $(this).next(':input').focus().select();  }
+      })
+      .appendTo(dialogDiv);
+    $('<input/>', { id: 'afndRL_dialog_readCharTxtP2', type: 'text', maxlength: 1, style: 'width:30px;text-align:center;' })
+      .val('R')
+      .keypress(function (event) {
+        if (event.which === $.ui.keyCode.ENTER) { $('afnd_dialog_readCharTxtP2').focus().select(); }
+      })
+      .appendTo(dialogDiv);
+
+
+
+      
+      //OPA NOVO CODIGO PARA TERCEIRA PILHA, OPA
+      $('<span></span>', { id: 'afnd_dialog_stateA', 'class': 'tranStart' }).appendTo(dialogDiv);
+    $('<input />', { id: 'afnd_dialog_readCharTxtP3', type: 'text', maxlength: 1, style: 'width:30px;text-align:center;' })
+      .val(emptyLabel)
+      .focusout(function(){
+        if($(this).val() == ""){
+          $(this).val(emptyLabel);
+        }
+      })
+      .keypress(function (event) {
+        if (event.which === $.ui.keyCode.ENTER) { $(this).next(':input').focus().select(); }
+      })
+      .appendTo(dialogDiv);
+    $('<input />', { id: 'afnd2_dialog_readCharTxtP3', type: 'text', maxlength: 1, style: 'width:30px;text-align:center;' })
+      .val(emptyLabel)
+      .focusout(function(){
+        if($(this).val() == ""){
+          $(this).val(emptyLabel);
+        }
+      })
+      .keypress(function (event) {
+        if (event.which === $.ui.keyCode.ENTER) { $(this).next(':input').focus().select();  }
+      })
+      .appendTo(dialogDiv);
+    $('<input/>', { id: 'afndRL_dialog_readCharTxtP3', type: 'text', maxlength: 1, style: 'width:30px;text-align:center;' })
+      .val('R')
+      .keypress(function (event) {
         if (event.which === $.ui.keyCode.ENTER) { dialogDiv.parent().find('div.ui-dialog-buttonset button').eq(-1).click(); }
       })
       .appendTo(dialogDiv);
+
     $('<span></span>', { id: 'afnd_dialog_stateB', 'class': 'tranEnd' }).appendTo(dialogDiv);
     $('body').append(dialogDiv);
+
+
 
     dialogDiv.dialog({
       dialogClass: "no-close",
@@ -143,12 +226,30 @@ var afnd_delegate = (function () {
 
     connectionClicked: function (connection) {
       dialogActiveConnection = connection;
-      text = dialogActiveConnection.getLabel();
-      regExp = new RegExp("^(.\|.\|.)$");
-      text = text.split(' ');
+      input = dialogActiveConnection.getLabel();
+      var text =[];
+      var text2 = [];
+      var text3 = [];
+      text[0] = input.charAt(1);
+      text[1] = input.charAt(3);
+      text[2] = input.charAt(5);
+      text2[0] = input.charAt(8);
+      text2[1] = input.charAt(10);
+      text2[2] = input.charAt(12);
+      text3[0] = input.charAt(15);
+      text3[1] = input.charAt(17);
+      text3[2] = input.charAt(19);
+
       $('#afnd_dialog_readCharTxt').val(text[0]);
       $('#afnd2_dialog_readCharTxt').val(text[1]);
       $('#afndRL_dialog_readCharTxt').val(text[2]);
+      $('#afnd_dialog_readCharTxtP2').val(text2[0]);
+      $('#afnd2_dialog_readCharTxtP2').val(text2[1]);
+      $('#afndRL_dialog_readCharTxtP2').val(text2[2]);
+      $('#afnd_dialog_readCharTxtP3').val(text3[0]);
+      $('#afnd2_dialog_readCharTxtP3').val(text3[1]);
+      $('#afndRL_dialog_readCharTxtP3').val(text3[2]);
+
       dialogDiv.dialog('option', 'buttons', {
         Cancel: function () { dialogCancel(true); },
         Delete: dialogDelete,
