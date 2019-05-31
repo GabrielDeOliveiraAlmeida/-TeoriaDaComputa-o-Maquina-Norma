@@ -4,6 +4,7 @@ var afnd_delegate = (function () {
   var container = null;
   var dialogDiv = null;
   var stepDiv = null;
+  var multDiv = null;
   var dialogActiveConnection = null;
   var emptyLabel = 'ϵ';
 
@@ -82,6 +83,9 @@ var afnd_delegate = (function () {
     dialogActiveConnection = null;
   };
 
+  var multDialog = function(){
+    console.log("Oi");
+  }
   var stepDialog = function () {
 
     stepDiv = $('<div></div>', { style: 'text-align:center;' });
@@ -392,12 +396,10 @@ var afnd_delegate = (function () {
       afnd.deserialize(model.afnd);
     },
 
-    teste: function () {
-      testarchamada(afnd.encode(), afnd.finais(), 'afnd');
+    multEntradas: function(){
+      
     },
-    ERT: function () {
-      testarchamadaERT(afnd.encode(), afnd.finais(), 'afnd');
-    },
+
     convertAFNDtoAFD: function () {
 
 

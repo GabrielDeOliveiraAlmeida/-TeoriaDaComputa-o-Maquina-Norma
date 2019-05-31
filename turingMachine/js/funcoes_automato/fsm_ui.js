@@ -7,6 +7,7 @@ var fsm = (function () {
 	var i;
 	var pointer;
 	var emptyLabel = 'ϵ';
+	var cont =0;
 
 	var localStorageAvailable = function () {
 		return (typeof Storage !== "undefined" && typeof localStorage !== "undefined");
@@ -182,14 +183,14 @@ var fsm = (function () {
 
 
 	var tapeUI = function (id, state) {
-			var str1 = state.expression.substring(0, state.pointer);
-			var str2 = state.expression.substring(state.pointer, state.pointer + 1);
-			var str3 = state.expression.substring(state.pointer + 1, state.expression.length);
-			 console.log(str1+"<->"+str2+"<->"+str3);	
-			
-			$('#' + id + '1 span.currentInput').html(str1);
-			$('#' + id + '2 span.consumedInput').html(str2);
-			$('#' + id + '2 span.currentInput').html(str3);
+		var str1 = state.expression.substring(0, state.pointer);
+		var str2 = state.expression.substring(state.pointer, state.pointer + 1);
+		var str3 = state.expression.substring(state.pointer + 1, state.expression.length);
+		console.log(str1 + "<->" + str2 + "<->" + str3);
+
+		$('#' + id + '1 span.currentInput').html(str1);
+		$('#' + id + '2 span.consumedInput').html(str2);
+		$('#' + id + '2 span.currentInput').html(str3);
 	};
 
 	var connectionClicked = function (connection) {
@@ -216,6 +217,15 @@ var fsm = (function () {
 		$('#testString').keyup(function (event) {
 			if (event.which === $.ui.keyCode.ENTER) {
 				$('#testBtn').trigger('click');
+			}
+		});
+
+		$('#acceptStrings').keyup(function (event) {
+			if (event.which === $.ui.keyCode.ENTER) {
+				var text = $('#acceptStrings').val();
+				if ((text.split('\n').length) % 4 == 0) {
+					$('#acceptStrings').val(text + "Outra Entrada\n");
+				}
 			}
 		});
 
@@ -338,19 +348,32 @@ var fsm = (function () {
 				}, 1000);
 				$("#contador").html(accepts.contador);
 			} else {
+
 				$('#resultConsole').empty();
+				var text = $('#acceptStrings').val();
+				fitas = text.split("Outra Entrada\n");
+				var input;
+
 				var makePendingEntry = function (input, type) {
 					return $('<div></div>', {
 						'class': 'pending',
 						title: 'Pending'
 					}).append(type + ' ' + (input === '' ? '[vazio]' : input)).appendTo('#resultConsole');
 				};
+
 				var updateEntry = function (result, entry, contador) {
 					entry.removeClass('pending').addClass(result).attr('title', result).append(' -> ' + result + ' -> ' + contador);
 				};
-				$.each(input.accept, function (index, string) {
-					var historia = delegate.fsm().accepts(string);
-					updateEntry((historia.found ? 'Aceito' : 'Rejeitado'), makePendingEntry(string, ''), historia.contador);
+
+				// $.each(input, function (index, string) {
+				// 	var historia = delegate.fsm().accepts(string);
+				// 	updateEntry((historia.found ? 'Aceito' : 'Rejeitado'), makePendingEntry(string, ''), historia.contador);
+				// });
+				$.each(fitas, function (index, entr) {
+					input = entr.split('\n');
+					console.log(input);
+					var historia = delegate.fsm().accepts(input[0], input[1], input[2]);
+					updateEntry((historia.found ? 'Aceito' : 'Rejeitado'), makePendingEntry(index, ''), historia.contador);
 				});
 
 				$('#bulkResultHeader').effect('highlight', {
@@ -503,6 +526,11 @@ var fsm = (function () {
 
 			loadSerializedFSM(JSON.stringify(model));
 
+		},
+
+		multEntradas: function () {
+			var n = texto.split('\n').length;
+			delegate.multEntradas();
 		}
 
 

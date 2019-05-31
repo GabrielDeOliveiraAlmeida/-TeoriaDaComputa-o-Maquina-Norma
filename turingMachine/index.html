@@ -35,11 +35,18 @@
       <button id="stopBtn" onclick="fsm.debugStop();" class="debuga" disabled="disabled"
         title="Parar Passo a Passo"><img src="images/icons8-pausa-circular-24.png" /></button>
     </div>
-    <div id="testResult">&nbsp;</div>
-    <label>Multiplas entradas (1 por linha):</label></br>
+    <br>
+    <!-- <div id="testResult">&nbsp;</div> -->
+    <label>Várias Entradas:</label>
+    <!-- <button id="bulkTestBtn" class="image" style="text-align:center;" -->
+    onclick="fsm.multEntradas();"
+    title="Testar multiplas entrada">
+    <img src="images/empty.png" /></button>
+
     <textarea id="acceptStrings" style="margin-bottom:5px;height: 100px;width: 170px;border: 1px solid #8bc34a;
     box-shadow: 0 0 0 0.2rem rgba(139, 195, 74, .25);-moz-border-radius: 10px;
-  -webkit-border-radius: 10px;resize: none;"></textarea>
+  -webkit-border-radius: 10px;resize: none;" ></textarea>
+  
     <label>Testar:</label>
     <button id="bulkTestBtn" class="image" style="margin-left:15px;"
       onclick="fsm.test({accept:$('#acceptStrings').val().split('\n'), reject:$('#acceptStrings').val().split('\n')});"
@@ -50,7 +57,8 @@
     </div>
   </div>
 
-  </br>
+
+
   <div id="openModal" class="modalDialog">
     <div>
       <a href="#close" title="Fechar" class="close">X</a>
@@ -173,6 +181,8 @@
   <script src="js/funcoes_automato/MultHistoryLog.js"></script>
   <script>
     tam = 3;
+  </script>
+
   </script>
 </body>
 
