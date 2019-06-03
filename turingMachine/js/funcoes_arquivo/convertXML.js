@@ -20,6 +20,10 @@ function convertXML(model) {
 	xml.getElementsByTagName("structure")[0].appendChild(newElement);//aplica o novo node criado em um outro
 	xml.getElementsByTagName("type")[0].appendChild(xml.createTextNode('turing')); //atributo em um node
 
+	newElement = xml.createElement("tapes");
+	xml.getElementsByTagName("structure")[0].appendChild(newElement);
+	xml.getElementsByTagName("tapes")[0].appendChild(xml.createTextNode('3'));
+
 	newElement = xml.createElement("automaton");
 	xml.getElementsByTagName("structure")[0].appendChild(newElement);
 
@@ -67,26 +71,33 @@ function convertXML(model) {
 		xml.getElementsByTagName("automaton")[0].appendChild(newElement);
 
 		newElement = xml.createElement("from");
-		newElement.appendChild(xml.createTextNode(model.transitions[index]['stateA'].slice(1)));
+		newElement.appendChild(xml.createTextNode(model.transitions[index]['transition']['stateA'].slice(1)));
 		xml.getElementsByTagName("transition")[i].appendChild(newElement);
 
 		newElement = xml.createElement("to");
-		newElement.appendChild(xml.createTextNode(model.transitions[index]['stateB'].slice(1)));
+		newElement.appendChild(xml.createTextNode(model.transitions[index]['transition']['stateB'].slice(1)));
 		xml.getElementsByTagName("transition")[i].appendChild(newElement);
 
-		newElement = xml.createElement("read");
-		if (model.transitions[index]['read'] != emptyLabel) {
-			newElement.appendChild(xml.createTextNode(model.transitions[index]['read']));
+		for (tape = 1; tape <= 3; tape++) {
+			newElement = xml.createElement("read");
+			if (model.transitions[index]['tr'+tape]['read'] != emptyLabel) {
+				newElement.appendChild(xml.createTextNode(model.transitions[index]['tr'+tape]['read']));
+				newElement.setAttribute("tape", tape);
+				xml.getElementsByTagName("transition")[i].appendChild(newElement);
+			}
+			newElement = xml.createElement("write");
+			if (model.transitions[index]['tr'+tape]['write'] != emptyLabel) {
+				newElement.appendChild(xml.createTextNode(model.transitions[index]['tr'+tape]['write']));
+				newElement.setAttribute("tape", tape);
+				xml.getElementsByTagName("transition")[i].appendChild(newElement);
+			}
+
+			newElement = xml.createElement("move");
+			newElement.appendChild(xml.createTextNode(model.transitions[index]['tr'+tape]['direction']));
+			newElement.setAttribute("tape", tape);
 			xml.getElementsByTagName("transition")[i].appendChild(newElement);
 		}
-		newElement = xml.createElement("write");
-		if (model.transitions[index]['write'] != emptyLabel) {
-			newElement.appendChild(xml.createTextNode(model.transitions[index]['write']));
-			xml.getElementsByTagName("transition")[i].appendChild(newElement);
-		}
-		newElement = xml.createElement("move");
-		newElement.appendChild(xml.createTextNode(model.transitions[index]['direction']));
-		xml.getElementsByTagName("transition")[i].appendChild(newElement);
+
 		i++;
 
 	});

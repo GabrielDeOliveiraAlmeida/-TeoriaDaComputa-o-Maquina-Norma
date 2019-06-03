@@ -366,13 +366,27 @@ var afnd_delegate = (function () {
         model.states[stateA] = {};
         $.each(transition, function (character, states) {
           $.each(states, function (index, state) {
-            model.states[state.final] = {};
+            model.states[state.tr1.final] = {};
             model.transitions.push({
-              stateA: stateA,
-              read: (character || emptyLabel),
-              write: state.write,
-              direction: state.direction,
-              stateB: state.final
+              transition:{
+                stateA: stateA,
+                stateB: state.tr1.final
+              },
+              tr1: {
+                read: (state.tr1.inputRead || emptyLabel),
+                write: state.tr1.inputWrite,
+                direction: state.tr1.direction,
+              },
+              tr2: {
+                read: (state.tr2.inputRead || emptyLabel),
+                write: state.tr2.inputWrite,
+                direction: state.tr2.direction,
+              },
+              tr3:{
+                read: (state.tr3.inputRead || emptyLabel),
+                write: state.tr3.inputWrite,
+                direction: state.tr3.direction,
+              }
             });
           });
         });

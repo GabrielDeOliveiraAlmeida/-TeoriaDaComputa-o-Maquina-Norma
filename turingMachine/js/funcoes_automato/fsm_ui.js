@@ -155,9 +155,13 @@ var fsm = (function () {
 		jsPlumb.unbind("jsPlumbConnection");
 		$.each(model.transitions, function (index, transition) {
 			jsPlumb.connect({
-				source: transition.stateA,
-				target: transition.stateB
-			}).setLabel(transition.read + " " + transition.write + " " + transition.direction);
+				source: transition.transition.stateA,
+				target: transition.transition.stateB,
+			}).setLabel(
+				"["+transition.tr1.read + "," + transition.tr1.write + "," + transition.tr1.direction+
+				"]["+transition.tr2.read + "," + transition.tr2.write + "," + transition.tr2.direction+
+				"]["+transition.tr3.read + "," + transition.tr3.write + "," + transition.tr3.direction+"]"
+				);
 		});
 		jsPlumb.bind("jsPlumbConnection", delegate.connectionAdded);
 

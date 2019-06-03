@@ -35,20 +35,29 @@ function convertJSON(xml) {
 
 		var stateA = 'q' + node.getElementsByTagName("from")[0].childNodes[0].nodeValue;
 		var stateB = 'q' + node.getElementsByTagName("to")[0].childNodes[0].nodeValue;
-		console.log(node.getElementsByTagName("read")[0]);
-		var inputRead = (node.getElementsByTagName("read")[0].childNodes.length) ?
-		node.getElementsByTagName("read")[0].childNodes[0].nodeValue : emptyLabel;
-		var inputWrite = (node.getElementsByTagName("write")[0].childNodes.length) ?
-			node.getElementsByTagName("write")[0].childNodes[0].nodeValue : emptyLabel;
-		var inputRLS = node.getElementsByTagName("move")[0].childNodes[0].nodeValue;
+
+		var tr = [];
+		
+		for (tape = 0; tape < 3; tape++) {
+			var inputRead = (node.getElementsByTagName("read")[tape].childNodes.length) ?
+				node.getElementsByTagName("read")[tape].childNodes[0].nodeValue : emptyLabel;
+			var inputWrite = (node.getElementsByTagName("write")[tape].childNodes.length) ?
+				node.getElementsByTagName("write")[tape].childNodes[0].nodeValue : emptyLabel;
+			var inputRLS = node.getElementsByTagName("move")[tape].childNodes[0].nodeValue;
+
+			tr.push({ final: stateB, inputRead: inputRead, inputWrite: inputWrite, direction: inputRLS });
+		}
+
 
 		if (inputRead == null) {
 			console.log("aqui é nulo");
 		}
 
 		if (!this.transitions[stateA]) { this.transitions[stateA] = {}; }
-		if (!this.transitions[stateA][inputRead]) { this.transitions[stateA][inputRead] = []; }
-		this.transitions[stateA][inputRead].push({ final: stateB, write: inputWrite, direction: inputRLS });
+		if (!this.transitions[stateA][tr[0].inputRead]) { this.transitions[stateA][tr[0].inputRead] = []; }
+		this.transitions[stateA][tr[0].inputRead].push({ tr1: tr[0], tr2: tr[1], tr3: tr[2] });
+
+		
 
 	};
 
@@ -61,21 +70,35 @@ function serializeJSON() {
 	let model = {};
 
 	model.type = 'AFND';
-	model.afnd = { transitions: transitions, startState: startState, acceptStates: acceptStates };
+	model.afnd = { transitions: this.transitions, startState: this.startState, acceptStates: this.acceptStates };
 	model.states = {};
 	model.transitions = [];
 	$.each(model.afnd.transitions, function (stateA, transition) {
 		model.states[stateA] = {};
 		$.each(transition, function (character, states) {
 			$.each(states, function (index, state) {
-				model.states[state.final] = {};
+				model.states[state.tr1.final] = {};
 				model.transitions.push({
-					stateA: stateA,
-					read: (character || emptyLabel),
-					write: state.write,
-					direction: state.direction,
-					stateB: state.final
-				});
+					transition:{
+					  stateA: stateA,
+					  stateB: state.tr1.final
+					},
+					tr1: {
+					  read: (state.tr1.inputRead || emptyLabel),
+					  write: state.tr1.inputWrite,
+					  direction: state.tr1.direction,
+					},
+					tr2: {
+					  read: (state.tr2.inputRead || emptyLabel),
+					  write: state.tr2.inputWrite,
+					  direction: state.tr2.direction,
+					},
+					tr3:{
+					  read: (state.tr3.inputRead || emptyLabel),
+					  write: state.tr3.inputWrite,
+					  direction: state.tr3.direction,
+					}
+				  });
 			});
 		});
 	});
@@ -90,7 +113,7 @@ function serializeJSON() {
 		i++;
 	});
 	model.states[startState] = {};
-
+	console.log(model);
 	return model;
 }
 
