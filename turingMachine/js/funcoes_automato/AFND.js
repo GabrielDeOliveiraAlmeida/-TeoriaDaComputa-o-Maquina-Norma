@@ -117,7 +117,7 @@ $(function () {
 
     if (this.hasTransition(stateA, tr, tr2, tr3)) {
       var pos = this.getTransition(stateA, tr, tr2, tr3);
-      this.transitions[stateA][text[0]].splice(this.transitions[stateA][text[0]][pos], 1);
+      this.transitions[stateA][text[0]].splice(pos, 1);
     }
     return this;
   };
