@@ -28,9 +28,6 @@ var afnd_delegate = (function () {
   };
 
   var dialogSave = function (update) {
-    if (update) {
-      afnd.removeTransition(dialogActiveConnection.sourceId, dialogActiveConnection.getLabel(), dialogActiveConnection.targetId);
-    }
     
     var inputRead = $('#afnd_dialog_readCharTxt').val();
     var inputWrite = $('#afnd2_dialog_readCharTxt').val();
@@ -55,11 +52,14 @@ var afnd_delegate = (function () {
     tr ={inputRead: inputRead, inputWrite: inputWrite, direction: inputRLS, final: dialogActiveConnection.targetId};
     tr2={inputRead: inputRead2, inputWrite: inputWrite2, direction: inputRLS2, final: dialogActiveConnection.targetId};
     tr3 ={inputRead: inputRead3, inputWrite: inputWrite3, direction: inputRLS3, final: dialogActiveConnection.targetId};
-
-    console.log(tr);
+ 
     if (afnd.hasTransition(dialogActiveConnection.sourceId, tr, tr2, tr3)) {
       alert(dialogActiveConnection.sourceId + " já existe transição para " + dialogActiveConnection.targetId + " em " + (inputRead || emptyLabel));
       return;
+    }
+    
+    if (update) {
+      afnd.removeTransition(dialogActiveConnection.sourceId, dialogActiveConnection.getLabel(), dialogActiveConnection.targetId);
     }
     //dialog={inputRead, write: inputWrite, direction: inputRLS || emptyLabel}
     dialog = "["+inputRead + "," + inputWrite + "," + inputRLS+"]["+inputRead2 + "," + inputWrite2 + "," + inputRLS2+"]["+inputRead3 + "," + inputWrite3 + "," + inputRLS3+"]";
