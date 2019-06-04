@@ -171,7 +171,7 @@ $(function () {
       console.log("Leitura 1 = " + char + ", 2= "+ char2 + ", 3= "+ char3);
       if(char2 != states[currentState].tr2.inputRead ||
         char3 != states[currentState].tr3.inputRead)
-          return log;
+          continue;
       console.log("LEITURA OK, next step");
 
       var expr1 = log.getExpression1();
